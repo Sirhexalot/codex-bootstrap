@@ -1,220 +1,122 @@
-# Codex Setup
+# Codex Agent Bootstrap
 
-Setup scripts for macOS and Windows to prepare a Codex-focused workstation with Composio, Remotion, Meta Ads CLI, and common media and automation tooling.
+Dieses Repository ist ein Startpaket, das du einem Freund, Team oder Kunden geben kannst, damit daraus ein sauber aufgesetzter Codex-Agent entsteht.
 
-## Contents
+Die Idee ist bewusst zweistufig:
 
-- `setup-mac.sh`: Homebrew-based setup for macOS, including macOS-only MCP servers.
-- `setup-windows.ps1`: `winget`/`npm`/`pip`/Git Bash-based setup for Windows.
+1. Die Root-Setup-Skripte richten die Werkbank global ein.
+2. Die Projektinitialisierung verwandelt diesen Ordner in einen konkreten Agenten mit eigener Identität, eigener `AGENTS.md` und eigenen Projektdokumenten.
 
-## What Gets Installed
+## Was Dieses Repository Leisten Soll
 
-The scripts install or configure:
+- Einen neuen Agenten schnell startklar machen
+- globale Werkbank-Tools auf macOS und Windows vorbereiten
+- ein strukturiertes Onboarding für den eigentlichen Agenten liefern
+- Skills aus Original-Repositories installierbar und updatebar machen
+- die spätere Projektstruktur sauber halten, indem Bootstrap-Interna unter `.bootstrap/` liegen
 
-- Python 3
-- Python 3.13 on macOS for Meta Ads CLI compatibility
-- Node.js LTS and npm
-- FFmpeg
-- ImageMagick
-- Ghostscript
-- Git / Git Bash
-- OpenAI Codex CLI
-- Memory MCP server for Codex
-- MarkItDown MCP server for Codex
-- Apple Mail MCP server for Codex on macOS
-- Apple Music MCP server for Codex on macOS
-- Apple Calendar MCP server for Codex on macOS
-- ChatGPT desktop app where supported
-- `pnpm` for local Node-based MCP servers
-- `pipx` for global Python CLI installs
-- Python packages: `holidays`, `pillow`, `rembg`, `markitdown-mcp`
-- Composio CLI
-- Meta Ads CLI via `pipx install meta-ads`
-- Several Codex skills, including Remotion, Composio, brand, and design-related skills
+## Schnellstart
 
-After installation, restart Codex so newly installed skills and MCP configuration are picked up.
+### 1. Werkbank global vorbereiten
 
-## Windows Setup
-
-### Requirement
-
-Windows requires `winget`. If it is missing, install **App Installer** from the Microsoft Store and restart PowerShell.
-
-### Run The Script
-
-Open PowerShell in this project folder and run:
-
-```powershell
-.\setup-windows.ps1
-```
-
-If PowerShell blocks script execution, use one of these options.
-
-### Option A: Allow Only For This Session
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\setup-windows.ps1
-```
-
-### Option B: Allow For Your User
-
-```powershell
-Unblock-File .\setup-windows.ps1
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-.\setup-windows.ps1
-```
-
-### Option C: Run Directly With Bypass
-
-```powershell
-powershell.exe -ExecutionPolicy Bypass -File .\setup-windows.ps1
-```
-
-## macOS Setup
-
-Open Terminal in this project folder and run:
+macOS:
 
 ```bash
 chmod +x ./setup-mac.sh
 ./setup-mac.sh
 ```
 
-If Homebrew is missing, the script installs it automatically.
+Windows:
 
-## Composio
-
-The setup installs Composio CLI. In a new terminal, sign in and verify:
-
-```bash
-composio login
-composio whoami
+```powershell
+.\setup-windows.ps1
 ```
 
-Official toolkit docs:
+Diese Skripte installieren nur globale Werkbank-Tools. Sie installieren **kein Codex**, keine projektbezogenen Dateien und keine Skills.
 
-https://docs.composio.dev/toolkits
+### 2. Projekt in Codex öffnen
 
-The scripts intentionally reinstall Composio cleanly by removing only the local Composio binary and version marker files in `~/.composio`. Existing login, user, and config files are preserved.
-
-Typical CLI workflow:
-
-```bash
-composio search "gmail"
-composio link gmail
-composio execute "<TOOL_SLUG>" -d '{"key":"value"}'
-```
-
-If a project uses the Composio SDK directly:
-
-```bash
-composio init
-```
-
-## Meta Ads CLI
-
-This project uses the official Meta Ads CLI, not a Meta Ads MCP server.
-
-The setup installs the CLI globally with `pipx`:
-
-```bash
-pipx install --python python3.13 meta-ads
-```
-
-On macOS, the setup installs `python@3.13` and `pipx`, then installs `meta-ads` against Python 3.13 because the package currently publishes compatible wheels for CPython 3.12/3.13 and this avoids the common Homebrew `pip` / PEP 668 issue.
-
-On Windows, the setup installs the CLI through `pipx` using Python 3.12.
-
-If `pipx` reports that `~/.local/bin` is not on `PATH`, run:
-
-```bash
-pipx ensurepath
-```
-
-Then restart your terminal.
-
-Official Meta setup reference:
-
-https://developers.facebook.com/documentation/ads-commerce/ads-ai-connectors/ads-cli/setup/get-started
-
-Supplementary third-party guide:
-
-https://www.get-ryze.ai/blog/meta-cli-command-line-tool-for-meta-ads-automation
-
-Note: the Ryze article is useful for ideas and workflow examples, but the official Meta documentation and the official PyPI package `meta-ads` remain the source of truth for this project.
-
-## Project-Specific CLI Paths
-
-Use these generic path patterns in project instructions:
+Öffne den Ordner in Codex und schreibe:
 
 ```text
-Meta Ads CLI: ~/.local/pipx/venvs/meta-ads/bin/meta
-Composio CLI: ~/.composio/composio
+Bitte initialisiere dieses Projekt als Kunden-Agent.
 ```
 
-For Meta Ads work in this project, prefer the Meta Ads CLI at:
+Der Agent soll dann:
 
-```text
-~/.local/pipx/venvs/meta-ads/bin/meta
-```
+- zuerst die Bootstrap-Dateien lesen
+- ein Interview führen
+- die Projektidentität erfassen
+- die finale `AGENTS.md` schreiben
+- `project.yaml`, `Memory.md`, `docs/` und `automations/heartbeat/` passend ausfüllen
 
-For other Composio access in this project, prefer the local Composio CLI at:
+### 3. Skills bewusst installieren
 
-```text
-~/.composio/composio
-```
+Die Skill-Skripte fragen immer nach dem Zielmodus:
 
-Only use another path or integration method if the relevant CLI is demonstrably unavailable.
+- `global`
+- `projektbezogen`
 
-## Remotion
-
-Remotion is usually created per project. Start a new Remotion project with:
+Verfügbare Befehle:
 
 ```bash
-npx create-video@latest
+./scripts/install_skills.sh
+./scripts/update_skills.sh
+./scripts/list_skills.sh
 ```
 
-Docs: https://www.remotion.dev/docs
+## Struktur
 
-## Design Skills
-
-The setup installs two focused skills from `nextlevelbuilder/ui-ux-pro-max-skill` in addition to `ui-ux-pro-max`:
-
-- `ckm:design`
-- `ckm:banner-design`
-
-This keeps UI/UX decisions, brand assets, and concrete creative production separated.
-
-## MarkItDown MCP
-
-The setup installs `markitdown-mcp` and writes it into `~/.codex/config.toml`.
-
-On macOS, the script uses a dedicated virtual environment so Homebrew Python is not modified by global package installs:
-
-```toml
-[mcp_servers.markitdown]
-command = "/Users/<your-user>/.codex/venvs/python-tools/bin/markitdown-mcp"
-enabled = true
+```text
+bootstrap-agent/
+├─ .bootstrap/
+├─ AGENTS.md
+├─ Memory.md
+├─ README.md
+├─ START_HERE.md
+├─ project.yaml
+├─ automations/
+├─ docs/
+├─ scripts/
+├─ skills/
+├─ setup-mac.sh
+└─ setup-windows.ps1
 ```
 
-## macOS-only MCP Servers
+## Trennung der Verantwortlichkeiten
 
-On macOS, the setup also installs Apple Mail MCP, Apple Music MCP, and Apple Calendar MCP under `~/.codex/mcp/` and registers them in `~/.codex/config.toml`.
+### Globale Werkbank
 
-## Outlook MCP
+- `setup-mac.sh`
+- `setup-windows.ps1`
 
-The linked `marlonluo2018/outlook-mcp-server` is Windows-only. It depends on Outlook desktop and Windows COM APIs. For a cross-platform approach, a Microsoft Graph-based MCP is more appropriate.
+Installieren globale Werkzeuge wie Python, Node, Git, FFmpeg, ImageMagick, Ghostscript, `pipx`, `pnpm` und Playwright.
 
-## After Setup
+### Bootstrap-Interna
 
-1. Restart Terminal or PowerShell.
-2. Restart Codex so MCP configuration and skills are reloaded.
-3. Optionally verify:
+- `.bootstrap/`
 
-```bash
-codex --version
-node --version
-npm --version
-composio whoami
-~/.local/pipx/venvs/meta-ads/bin/meta --help
-```
+Enthält Vorlagen, Metadaten, Skill-Kataloge und Hilfslogik für Initialisierung und Skill-Verwaltung.
+
+### Sichtbare Projekt-Skripte
+
+- `scripts/init-project.sh`
+- `scripts/init-project.ps1`
+- `scripts/install_skills.sh`
+- `scripts/update_skills.sh`
+- `scripts/list_skills.sh`
+
+Das sind schlanke Einstiegspunkte. Die eigentliche Logik liegt unter `.bootstrap/`.
+
+## Skill-Prinzip
+
+- Skills immer aus Original-Repositories
+- Tools immer global
+- Skills pro Installationslauf ausdrücklich `global` oder `projektbezogen`
+- größere projektspezifische Skill-Sammlungen landen versteckt unter `.bootstrap/skills-cache/`, damit der sichtbare Projektordner sauber bleibt
+
+## Nach der Initialisierung
+
+Nach dem ersten Onboarding gehört die sichtbare `AGENTS.md` vollständig dem konkreten Agentenprojekt.
+
+Die Bootstrap-Regeln bleiben nur noch unter `.bootstrap/`, damit der neue Nutzer einen klaren, nicht überladenen Projektarbeitsbereich hat.

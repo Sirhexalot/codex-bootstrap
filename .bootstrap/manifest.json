@@ -1,0 +1,30 @@
+{
+  "bootstrap": {
+    "name": "codex-agent-bootstrap",
+    "version": "0.2.0"
+  },
+  "initialized": false,
+  "initializedAt": null,
+  "entrypoints": [
+    "setup-mac.sh",
+    "setup-windows.ps1",
+    "scripts/init-project.sh",
+    "scripts/init-project.ps1",
+    "scripts/install_skills.sh",
+    "scripts/update_skill.sh",
+    "scripts/update_skills.sh",
+    "scripts/list_skills.sh"
+  ],
+  "managedAreas": [
+    ".bootstrap/templates/",
+    ".bootstrap/scripts/",
+    ".bootstrap/lib/",
+    ".bootstrap/skill-installs/",
+    ".bootstrap/skills-cache/"
+  ],
+  "notes": [
+    "Werkbank-Tools sind global.",
+    "Skills werden aus Original-Repositories geholt.",
+    "Die sichtbare AGENTS.md wird nach der Initialisierung projektspezifisch überschrieben."
+  ]
+}

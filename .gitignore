@@ -1,0 +1,31 @@
+.DS_Store
+
+# Editor settings
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# Node / frontend artifacts
+node_modules/
+dist/
+build/
+
+# Python artifacts
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Local Claude notes
+.claude/*.local.md
+
+# Bootstrap-local skill state
+.bootstrap/skills-cache/
+.bootstrap/skill-installs/*.env
+skills/**/.skill-source.env

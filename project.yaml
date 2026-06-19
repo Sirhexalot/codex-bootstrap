@@ -1,0 +1,70 @@
+bootstrap:
+  name: "codex-agent-bootstrap"
+  version: "0.2.0"
+  initialized_at: null
+  manifest: ".bootstrap/manifest.json"
+
+project:
+  name: "<Projektname>"
+  customer: "<Kunde, Team oder Organisation>"
+  purpose: "<Wofür soll der Agent da sein?>"
+  owner: "<Wer startet dieses Projekt?>"
+  user_name: "<Name des Nutzers>"
+  agent_name: "<Name des Agenten>"
+  role: "<Rolle oder Schwerpunkt des Agenten>"
+  country: "<Land>"
+  timezone: "<Zeitzone>"
+  status: "template"
+  language: "de"
+
+agent:
+  default_tone: "freundlich, präzise, pragmatisch"
+  autonomy_level: "confirm_before_external_actions"
+  risk_level: "medium"
+  primary_users:
+    - "<Hauptnutzer>"
+  out_of_scope:
+    - "Keine externen Aktionen mit Wirkung auf Kunden, Konten, Daten oder Kosten ohne klare Freigabe."
+    - "Keine Zugangsdaten, API-Keys oder Tokens in Projektdateien speichern."
+    - "Keine produktiven Automatisierungen ohne dokumentierten Zweck, Zugriff und Abbruchkriterien aktivieren."
+  boundaries: "<Sensible Grenzen und No-Gos>"
+
+memory:
+  long_term_memory: "Memory MCP Server"
+  project_memory: "Memory.md"
+  automation_memory_required: true
+  update_project_memory_on_relevant_changes: true
+
+folders:
+  automations: "automations"
+  docs: "docs"
+  skills: "skills"
+  bootstrap: ".bootstrap"
+
+tools:
+  workstation_scope: "global"
+  skills_scope: "global_or_project"
+  required:
+    - "Codex"
+    - "Python"
+    - "Node.js"
+    - "Git"
+  optional:
+    - "<Wichtige Tools oder Systeme>"
+
+onboarding:
+  first_prompt: "Bitte initialisiere dieses Projekt als Kunden-Agent."
+  read_first:
+    - "START_HERE.md"
+    - "AGENTS.md"
+    - "Memory.md"
+    - "project.yaml"
+    - ".bootstrap/README.md"
+
+heartbeat:
+  enabled: true
+  name: "Heartbeat"
+  schedule: "weekdays hourly from 09:00 to 17:00"
+  timezone: "local"
+  automation_path: "automations/heartbeat"
+  purpose: "Regelmäßig prüfen, ob Memory, Dokumentation, Entscheidungen und Runbooks gepflegt sind."
