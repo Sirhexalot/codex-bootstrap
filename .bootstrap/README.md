@@ -16,7 +16,7 @@ Wenn dieses Repository noch nicht initialisiert ist, lies mindestens in dieser R
 
 1. `.bootstrap/README.md`
 2. `.bootstrap/templates/final-AGENTS.md`
-3. `.bootstrap/scripts/init-project.sh` oder `.bootstrap/scripts/init-project.ps1`
+3. `.bootstrap/scripts/bootstrap-project-init.sh` oder `.bootstrap/scripts/bootstrap-project-init.ps1`
 4. `.bootstrap/lib/skill-catalog.sh`
 
 ## Wichtige Regeln

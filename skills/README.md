@@ -8,6 +8,7 @@ Dieser Ordner ist für direkte, bewusst sichtbare Projektskills gedacht.
 - Skills aus Original-Repositories können lokal unter `skills/` installiert werden, gelten aber als reproduzierbare Arbeitskopien.
 - Remote-installierte Skills werden in diesem Bootstrap standardmäßig nicht versioniert.
 - Wenn ein Upstream-Skill wirklich Teil dieses Repositories werden soll, muss er bewusst als eigener Projektskill übernommen werden.
+- Verwaltete Upstream-Quellen werden über `./scripts/install_skills.sh`, `./scripts/update_skills.sh` und `./scripts/list_skills.sh` gesteuert.
 
 ## Typische Inhalte
 

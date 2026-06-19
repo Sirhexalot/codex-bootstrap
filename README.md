@@ -85,7 +85,7 @@ bootstrap-agent/
 
 ## Trennung der Verantwortlichkeiten
 
-### Globale Werkbank
+### Globale Werkbank-Setups
 
 - `setup-mac.sh`
 - `setup-windows.ps1`
@@ -98,7 +98,7 @@ Installieren globale Werkzeuge wie Python, Node, Git, FFmpeg, ImageMagick, Ghost
 
 Enthält Vorlagen, Metadaten, Skill-Kataloge und Hilfslogik für Initialisierung und Skill-Verwaltung.
 
-### Sichtbare Projekt-Skripte
+### Sichtbare Projektbefehle
 
 - `scripts/init-project.sh`
 - `scripts/init-project.ps1`
@@ -107,6 +107,12 @@ Enthält Vorlagen, Metadaten, Skill-Kataloge und Hilfslogik für Initialisierung
 - `scripts/list_skills.sh`
 
 Das sind schlanke Einstiegspunkte. Die eigentliche Logik liegt unter `.bootstrap/`.
+
+Merksatz:
+
+- `setup-*` richtet den Rechner ein.
+- `scripts/init-project.*` initialisiert dieses Projekt.
+- `.bootstrap/scripts/bootstrap-project-init.*` ist nur die interne Implementierung dahinter.
 
 ## Skill-Prinzip
 

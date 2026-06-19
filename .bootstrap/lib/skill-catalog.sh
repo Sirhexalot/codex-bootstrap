@@ -14,6 +14,15 @@ SUPPORTED_SKILLS=(
   "marketingskills"
   "frontend-design"
   "humanizer"
+  "ui-ux-pro-max"
+  "drawio-diagrams-enhanced"
+  "svg-precision"
+  "pptx"
+  "senior-architect"
+  "brand-voice"
+  "infographic-creation"
+  "jira-expert"
+  "confluence"
 )
 
 ensure_command() {
@@ -38,6 +47,7 @@ usage_install() {
 Verwendung:
   ./scripts/install_skills.sh all
   ./scripts/install_skills.sh frontend-design humanizer
+  ./scripts/install_skills.sh ui-ux-pro-max pptx jira-expert
   ./scripts/install_skills.sh --mode global all
 EOF
 }
@@ -47,6 +57,7 @@ usage_update() {
 Verwendung:
   ./scripts/update_skill.sh all
   ./scripts/update_skill.sh financial-services
+  ./scripts/update_skill.sh ui-ux-pro-max pptx jira-expert
 EOF
 }
 
@@ -117,6 +128,26 @@ replace_directory() {
   rm -rf "$target_dir"
   mkdir -p "$(dirname "$target_dir")"
   cp -R "$source_dir" "$target_dir"
+}
+
+install_repo_subdir() {
+  local skill_name="$1"
+  local mode="$2"
+  local source_type="$3"
+  local repo_url="$4"
+  local sparse_path="$5"
+  local source_subdir="$6"
+  local target_dir
+  target_dir="$(resolve_target_dir "$skill_name" "$mode" "$source_type")"
+
+  copy_repo_subdir() {
+    local repo_dir="$1"
+    replace_directory "$repo_dir/$source_subdir" "$target_dir"
+    write_source_metadata "$target_dir" "$skill_name" "$source_type" "$repo_url"
+    write_install_metadata "$skill_name" "$mode" "$source_type" "$repo_url" "$target_dir"
+  }
+
+  with_temp_repo "$repo_url" "$sparse_path" copy_repo_subdir
 }
 
 with_temp_repo() {
@@ -217,17 +248,61 @@ install_marketingskills() {
 install_financial_services() {
   local mode="$1"
   local repo_url="https://github.com/anthropics/financial-services.git"
-  local target_dir
-  target_dir="$(resolve_target_dir "financial-services" "$mode" "collection")"
+  install_repo_subdir "financial-services" "$mode" "collection" "$repo_url" "plugins" "plugins"
+}
 
-  copy_repo() {
-    local repo_dir="$1"
-    replace_directory "$repo_dir/plugins" "$target_dir"
-    write_source_metadata "$target_dir" "financial-services" "collection" "$repo_url"
-    write_install_metadata "financial-services" "$mode" "collection" "$repo_url" "$target_dir"
-  }
+install_ui_ux_pro_max() {
+  local mode="$1"
+  local repo_url="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git"
+  install_repo_subdir "ui-ux-pro-max" "$mode" "skill" "$repo_url" ".claude/skills/ui-ux-pro-max" ".claude/skills/ui-ux-pro-max"
+}
 
-  with_temp_repo "$repo_url" "plugins" copy_repo
+install_drawio_diagrams_enhanced() {
+  local mode="$1"
+  local repo_url="https://github.com/jgtolentino/insightpulse-odoo.git"
+  install_repo_subdir "drawio-diagrams-enhanced" "$mode" "skill" "$repo_url" "docs/claude-code-skills/community/drawio-diagrams-enhanced" "docs/claude-code-skills/community/drawio-diagrams-enhanced"
+}
+
+install_svg_precision() {
+  local mode="$1"
+  local repo_url="https://github.com/dkyazzentwatwa/chatgpt-skills.git"
+  install_repo_subdir "svg-precision" "$mode" "skill" "$repo_url" "svg-precision-skill" "svg-precision-skill"
+}
+
+install_pptx() {
+  local mode="$1"
+  local repo_url="https://github.com/anthropics/skills.git"
+  install_repo_subdir "pptx" "$mode" "skill" "$repo_url" "skills/pptx" "skills/pptx"
+}
+
+install_senior_architect() {
+  local mode="$1"
+  local repo_url="https://github.com/alirezarezvani/claude-skills.git"
+  install_repo_subdir "senior-architect" "$mode" "skill" "$repo_url" "engineering-team/skills/senior-architect" "engineering-team/skills/senior-architect"
+}
+
+install_brand_voice() {
+  local mode="$1"
+  local repo_url="https://github.com/anthropics/knowledge-work-plugins.git"
+  install_repo_subdir "brand-voice" "$mode" "collection" "$repo_url" "partner-built/brand-voice" "partner-built/brand-voice"
+}
+
+install_infographic_creation() {
+  local mode="$1"
+  local repo_url="https://github.com/antvis/Infographic.git"
+  install_repo_subdir "infographic-creation" "$mode" "skill" "$repo_url" "skills/infographic-creator" "skills/infographic-creator"
+}
+
+install_jira_expert() {
+  local mode="$1"
+  local repo_url="https://github.com/alirezarezvani/claude-skills.git"
+  install_repo_subdir "jira-expert" "$mode" "skill" "$repo_url" "project-management/skills/jira-expert" "project-management/skills/jira-expert"
+}
+
+install_confluence() {
+  local mode="$1"
+  local repo_url="https://github.com/alirezarezvani/claude-skills.git"
+  install_repo_subdir "confluence" "$mode" "skill" "$repo_url" "project-management/skills/confluence-expert" "project-management/skills/confluence-expert"
 }
 
 install_skill_by_name() {
@@ -239,6 +314,15 @@ install_skill_by_name() {
     marketingskills) install_marketingskills "$mode" ;;
     frontend-design) install_frontend_design "$mode" ;;
     humanizer) install_humanizer "$mode" ;;
+    ui-ux-pro-max) install_ui_ux_pro_max "$mode" ;;
+    drawio-diagrams-enhanced) install_drawio_diagrams_enhanced "$mode" ;;
+    svg-precision) install_svg_precision "$mode" ;;
+    pptx) install_pptx "$mode" ;;
+    senior-architect) install_senior_architect "$mode" ;;
+    brand-voice) install_brand_voice "$mode" ;;
+    infographic-creation) install_infographic_creation "$mode" ;;
+    jira-expert) install_jira_expert "$mode" ;;
+    confluence) install_confluence "$mode" ;;
     *)
       echo "Fehler: Nicht unterstützte Skill-Quelle: $skill_name" >&2
       exit 1

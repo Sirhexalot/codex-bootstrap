@@ -1,5 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-. (Join-Path (Resolve-Path (Join-Path $PSScriptRoot "..")) ".bootstrap/scripts/init-project.ps1")
+. (Join-Path (Resolve-Path (Join-Path $PSScriptRoot "..")) ".bootstrap/scripts/bootstrap-project-init.ps1")
 
 Invoke-BootstrapProjectInit

@@ -3,6 +3,6 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-source "$ROOT_DIR/.bootstrap/scripts/init-project.sh"
+source "$ROOT_DIR/.bootstrap/scripts/bootstrap-project-init.sh"
 
 bootstrap_init_project "$@"

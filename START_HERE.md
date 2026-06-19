@@ -39,3 +39,9 @@ Windows:
 ```
 
 Diese Skripte installieren nur globale Werkbank-Tools. Codex selbst wird hier nicht installiert.
+
+## Wichtige Unterscheidung
+
+- `setup-mac.sh` und `setup-windows.ps1` bereiten den Rechner vor.
+- `scripts/init-project.sh` und `scripts/init-project.ps1` initialisieren dieses konkrete Projekt.
+- Interne Bootstrap-Logik liegt getrennt unter `.bootstrap/`.
