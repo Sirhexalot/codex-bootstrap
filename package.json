@@ -4,5 +4,23 @@
   "scripts": {
     "setup": "npx -p imap-mcp-server imap-setup",
     "imap:mcp": "npx -y imap-mcp-server"
-  }
+  },
+  "version": "1.0.0",
+  "description": "This repository is a starter kit you can hand to a friend, team, or customer so it can become a well-structured Codex agent.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onlysync-io/onlysync-codex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/onlysync-io/onlysync-codex/issues"
+  },
+  "homepage": "https://github.com/onlysync-io/onlysync-codex#readme"
 }

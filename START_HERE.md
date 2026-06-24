@@ -19,7 +19,7 @@ The agent should:
 3. write the final `AGENTS.md` for the project
 4. adapt `project.yaml`, `docs/`, and `Memory.md` to the real context
 5. create or update the default `Heartbeat` automation
-6. show how to install tool bundles and skills globally or in workspace mode
+6. show how to install tool bundles and skills globally or in project mode
 
 ## Prepare the Workbench First
 

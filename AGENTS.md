@@ -31,10 +31,10 @@ If this project has not been initialized for a concrete user yet, work in exactl
 
 ## Skill Rule
 
-- Tools and skills can be installed globally or in workspace mode.
+- Tools and skills can be installed globally or in project mode.
 - Tool bundles should prefer native installation; Python or Node should only fill real gaps.
 - Skills always come from original repositories.
-- Tool and skill installs must choose between `global` and `workspace`.
+- Tool and skill installs must choose between `global` and `project`.
 
 ## Important Scripts
 
@@ -71,6 +71,11 @@ If this project has not been initialized for a concrete user yet, work in exactl
 <!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
 ## Managed Project Tool Bundles
 
-- `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown` | Packages `python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf`
-  Note: Workspace mode installs the Python document tools locally. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
+- none
 <!-- CODEX_PROJECT_TOOL_BUNDLES_END -->
+
+
+
+
+
+

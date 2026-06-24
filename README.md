@@ -11,7 +11,7 @@ The design is intentionally two-step:
 
 - a fast path to a usable new agent
 - global workbench tooling for macOS and Windows
-- tool bundles installable in global or workspace mode
+- tool bundles installable in global or project mode
 - structured onboarding for the real agent
 - skills installable and updateable from original repositories
 - a clean future project structure, with bootstrap internals living under `.bootstrap/`
@@ -56,7 +56,7 @@ The agent should then:
 The tool scripts ask for a target mode:
 
 - `global`
-- `workspace`
+- `project`
 
 Available commands:
 
@@ -65,6 +65,22 @@ Available commands:
 ./scripts/update_tools.sh
 ./scripts/list_tools.sh
 ```
+
+Windows:
+
+```powershell
+.\scripts\install_tools.ps1
+.\scripts\update_tools.ps1
+.\scripts\list_tools.ps1
+```
+
+Accepted mode forms are now the same for tools and skills on both platforms:
+
+- `global ...`
+- `project ...`
+- `--mode global ...`
+- `--mode project ...`
+- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
 
 Default bundles:
 
@@ -80,7 +96,7 @@ Default bundles:
 The skill scripts also ask for a target mode:
 
 - `global`
-- `workspace`
+- `project`
 
 Available commands:
 
@@ -97,6 +113,14 @@ Windows:
 .\scripts\update_skills.ps1
 .\scripts\list_skills.ps1
 ```
+
+Accepted mode forms are the same as for tools:
+
+- `global ...`
+- `project ...`
+- `--mode global ...`
+- `--mode project ...`
+- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
 
 ### 5. Optionally Wire In the IMAP MCP Server
 
@@ -171,15 +195,15 @@ These are thin entry points. The real logic lives under `.bootstrap/`.
 Shortcut summary:
 
 - `setup-*` prepares the machine
-- `scripts/install_tools.*` manages tool bundles in global or workspace mode
+- `scripts/install_tools.*` manages tool bundles in global or project mode
 - `scripts/init-project.*` initializes this project
 - `.bootstrap/scripts/bootstrap-project-init.*` is only the internal implementation behind it
 
 ## Skill Principles
 
-- tools are managed as bundles and can be `global` or `workspace` depending on the bundle
+- tools are managed as bundles and can be `global` or `project` depending on the bundle
 - skills always come from original repositories
-- each skill install explicitly chooses `global` or `workspace`
+- each skill install explicitly chooses `global` or `project`
 - larger project-specific skill collections should live under `.bootstrap/skills-cache/` so the visible project root stays clean
 
 ## After Initialization

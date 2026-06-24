@@ -33,6 +33,37 @@ function Refresh-SessionPath {
   }
 }
 
+function Read-ToolMode {
+  while ($true) {
+    $input = Read-Host "Choose tool mode [global/project]"
+    switch ($input.ToLowerInvariant()) {
+      "global" { return "global" }
+      "project" { return "project" }
+      "projekt" { return "project" }
+      "projektbezogen" { return "project" }
+      "workspace" { return "project" }
+      default { Write-Host "Please enter 'global' or 'project'." }
+    }
+  }
+}
+
+function Ensure-PipxEnvironment {
+  $preferredHome = "C:\pipx"
+  $preferredBin = Join-Path $preferredHome "bin"
+
+  if (-not $env:PIPX_HOME) {
+    [Environment]::SetEnvironmentVariable("PIPX_HOME", $preferredHome, "User")
+    $env:PIPX_HOME = $preferredHome
+  }
+
+  if (-not $env:PIPX_BIN_DIR) {
+    [Environment]::SetEnvironmentVariable("PIPX_BIN_DIR", $preferredBin, "User")
+    $env:PIPX_BIN_DIR = $preferredBin
+  }
+
+  New-Item -ItemType Directory -Force -Path $env:PIPX_HOME, $env:PIPX_BIN_DIR | Out-Null
+}
+
 function Get-InstalledPythonCommand {
   $candidates = @(@(
     (Join-Path $env:LOCALAPPDATA "Programs\Python\Python312\python.exe"),
@@ -337,9 +368,10 @@ function Install-ToolBundle {
       winget install --id "OpenJS.NodeJS.LTS" --exact --source winget --accept-package-agreements --accept-source-agreements
       winget install --id "Git.Git" --exact --source winget --accept-package-agreements --accept-source-agreements
       winget install --id "BurntSushi.ripgrep.MSVC" --exact --source winget --accept-package-agreements --accept-source-agreements
+      Ensure-PipxEnvironment
       Invoke-BootstrapPython -m pip install --upgrade pip pipx
       pipx ensurepath
-      Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_only" -TargetDir "$env:ProgramFiles;$env:USERPROFILE\.codex\bin" -Commands "python,node,npm,git,rg,pipx" -Packages "winget:python,node,git,ripgrep|pip:pipx" -Notes "Core system tools are installed globally only."
+      Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_only" -TargetDir "$env:ProgramFiles;$env:USERPROFILE\.codex\bin;$env:PIPX_BIN_DIR" -Commands "python,node,npm,git,rg,pipx" -Packages "winget:python,node,git,ripgrep|pip:pipx" -Notes "Core system tools are installed globally only. On Windows, bootstrap pins pipx to a user-level path without spaces."
     }
     "documents" {
       if ($Mode -eq "global") {
@@ -352,7 +384,7 @@ function Install-ToolBundle {
         Install-DocumentsPythonProject
         Install-DocumentsNodeProject
         $projectCommands = "$(Join-Path $script:ProjectBinDir 'codex-python.cmd'),$(Join-Path $script:ProjectBinDir 'codex-markitdown.cmd')"
-        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "documents") -Commands $projectCommands -Packages "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" -Notes "Workspace mode creates a local document runtime with Python and Node packages. Pandoc remains a globally preferred native tool."
+        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "documents") -Commands $projectCommands -Packages "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" -Notes "Project mode creates a local document runtime with Python and Node packages. Pandoc remains a globally preferred native tool."
       }
     }
     "pdf-images" {
@@ -375,7 +407,7 @@ function Install-ToolBundle {
         Sync-GlobalAgentsFile
       } else {
         Install-BrowserAutomationProject
-        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "browser-automation") -Commands (Join-Path $script:ProjectBinDir "codex-playwright.cmd") -Packages "npm:playwright" -Notes "Workspace mode creates a local Playwright runtime directory. pnpm remains globally preferred."
+        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "browser-automation") -Commands (Join-Path $script:ProjectBinDir "codex-playwright.cmd") -Packages "npm:playwright" -Notes "Project mode creates a local Playwright runtime directory. pnpm remains globally preferred."
       }
     }
     "composio-cli" {
@@ -427,7 +459,13 @@ function Invoke-InstallTools {
   )
 
   Ensure-ToolBaseDirs
-  $selectedMode = if ($Mode) { $Mode } else { "global" }
+  $selectedMode = if ($Mode) { $Mode.ToLowerInvariant() } else { Read-ToolMode }
+  if ($selectedMode -eq "workspace") {
+    $selectedMode = "project"
+  }
+  if ($selectedMode -notin @("global", "project")) {
+    throw "Mode must be 'global' or 'project'."
+  }
   $selectedBundles = if ($Bundles.Count -eq 1 -and $Bundles[0] -eq "all") { $script:SupportedToolBundles } else { $Bundles }
   foreach ($bundle in $selectedBundles) {
     Write-Host "Installing tool bundle $bundle in $selectedMode mode..."

@@ -5,7 +5,7 @@ This file documents which global workbench tools and project-specific systems ma
 ## Workbench Tools
 
 - Tool bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`, `composio-cli`
-- Scope model: tools and skills can be installed as `global` or `workspace`
+- Scope model: tools and skills can be installed as `global` or `project`
 - Native priority: system tools first, Python or Node only as targeted supplements
 - Global Python workbench: `~/.codex/workbench/python`
 - Global Python entrypoint: `codex-python`

@@ -1,4 +1,5 @@
 param(
+  [string] $Mode = "",
   [Parameter(ValueFromRemainingArguments = $true)]
   [string[]] $Args
 )
@@ -23,8 +24,15 @@ function Get-BashExecutable {
   throw "No Bash executable was found. Install Git for Windows first, then rerun this script."
 }
 
+$forwardedArgs = [System.Collections.Generic.List[string]]::new()
+if ($Mode) {
+  $forwardedArgs.Add("--mode")
+  $forwardedArgs.Add($Mode)
+}
+$forwardedArgs.AddRange($Args)
+
 $bashExe = Get-BashExecutable
 $scriptPath = Join-Path $PSScriptRoot "install_skills.sh"
 
-& $bashExe --noprofile --norc $scriptPath @Args
+& $bashExe --noprofile --norc $scriptPath $forwardedArgs.ToArray()
 exit $LASTEXITCODE

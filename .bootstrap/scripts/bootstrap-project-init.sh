@@ -172,7 +172,7 @@ EOF
 
 - Python: \`global\`
 - Tool bundles: \`core, documents, pdf-images, diagrams, browser-automation, composio-cli\`
-- Scope model: \`global or workspace\`
+- Scope model: \`global or project\`
 - Native priority: \`system tools first, Python or Node only as targeted supplements\`
 - Global Python workbench: \`~/.codex/workbench/python\`
 - Global Python entrypoint: \`codex-python\`
@@ -185,7 +185,7 @@ EOF
 
 ## Access Rules
 
-- Tools and skills can be installed in global or workspace mode.
+- Tools and skills can be installed in global or project mode.
 - Installation scripts synchronize compact managed global references into \`~/.codex/AGENTS.md\` and managed project entries into \`./AGENTS.md\`.
 - Credentials are not stored in project files.
 - External write actions require explicit approval.
@@ -203,7 +203,7 @@ EOF
 - Decision: This repository was turned into a concrete agent for \`$user_name\`.
 - Rationale: The bootstrap should now act as the real project frame for \`$agent_name\`.
 - Alternatives: Keep the generic bootstrap AGENTS file.
-- Impact: The visible \`AGENTS.md\` is now project-specific, and tool bundles and skills can be chosen in global or workspace mode.
+- Impact: The visible \`AGENTS.md\` is now project-specific, and tool bundles and skills can be chosen in global or project mode.
 - Status: \`active\`
 EOF
   }
@@ -224,7 +224,7 @@ EOF
 
 ## Stable Rules
 
-- Tool bundles and skills are installed by script in \`global\` or \`workspace\` mode.
+- Tool bundles and skills are installed by script in \`global\` or \`project\` mode.
 - External or irreversible actions require approval.
 - Relevant project changes are documented here.
 
@@ -245,7 +245,7 @@ EOF
   - created or updated the Heartbeat automation
 - Next steps:
   - define the first concrete tools and channels
-  - install the required tool bundles and skills in global or workspace mode
+  - install the required tool bundles and skills in global or project mode
 EOF
   }
 

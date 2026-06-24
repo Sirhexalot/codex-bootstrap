@@ -23,9 +23,9 @@ If this repository has not been initialized yet, read at least in this order:
 
 - the visible `AGENTS.md` is only the bootstrap entry point
 - after initialization, the visible `AGENTS.md` belongs to the concrete project
-- tool bundles and skills can be installed in global or workspace mode depending on the task
+- tool bundles and skills can be installed in global or project mode depending on the task
 - native system tools stay globally preferred, while document-heavy Python or Node runtimes may be added locally when useful
-- skills are fetched from original repositories and installed per run as `global` or `workspace`
+- skills are fetched from original repositories and installed per run as `global` or `project`
 - project collections should live under `.bootstrap/skills-cache/` so the visible project area stays clean
 
 ## Internal Structure

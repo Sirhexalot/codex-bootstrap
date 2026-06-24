@@ -26,6 +26,8 @@ usage_install_tools() {
 Usage:
   ./scripts/install_tools.sh all
   ./scripts/install_tools.sh core documents composio-cli
+  ./scripts/install_tools.sh global all
+  ./scripts/install_tools.sh project documents browser-automation
   ./scripts/install_tools.sh --mode global all
   ./scripts/install_tools.sh --mode project documents browser-automation
 EOF
@@ -168,18 +170,18 @@ list_supported_tool_bundles() {
 prompt_mode_tools() {
   local input
   while true; do
-    read -r -p "Choose tool mode [global/workspace]: " input
+    read -r -p "Choose tool mode [global/project]: " input
     case "$input" in
       global)
         printf 'global'
         return
         ;;
-      workspace|projektbezogen|projekt|project)
+      projektbezogen|projekt|project|workspace)
         printf 'project'
         return
         ;;
     esac
-    echo "Please enter 'global' or 'workspace'."
+    echo "Please enter 'global' or 'project'."
   done
 }
 
@@ -490,7 +492,7 @@ install_documents_bundle() {
   else
     install_project_python_documents
     install_project_node_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Workspace mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools."
+    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Project mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools."
   fi
 }
 
@@ -531,7 +533,7 @@ install_browser_automation_bundle() {
     sync_global_agents_file
   else
     install_project_browser_runtime
-    write_tool_metadata "browser-automation" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/browser-automation" "$PROJECT_BIN_DIR/codex-playwright" "npm:playwright" "Workspace mode creates a local Playwright runtime directory. pnpm remains globally preferred."
+    write_tool_metadata "browser-automation" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/browser-automation" "$PROJECT_BIN_DIR/codex-playwright" "npm:playwright" "Project mode creates a local Playwright runtime directory. pnpm remains globally preferred."
   fi
 }
 
@@ -619,6 +621,24 @@ bootstrap_install_tools() {
         mode="$2"
         shift 2
         ;;
+      global)
+        if [[ -z "$mode" && ${#requested[@]} -eq 0 ]]; then
+          mode="global"
+          shift
+        else
+          requested+=("$1")
+          shift
+        fi
+        ;;
+      workspace|project)
+        if [[ -z "$mode" && ${#requested[@]} -eq 0 ]]; then
+          mode="project"
+          shift
+        else
+          requested+=("$1")
+          shift
+        fi
+        ;;
       -h|--help)
         usage_install_tools
         return
@@ -638,10 +658,13 @@ bootstrap_install_tools() {
   if [[ -z "$mode" ]]; then
     mode="$(prompt_mode_tools)"
   fi
-  [[ "$mode" == "global" || "$mode" == "project" ]] || {
+  [[ "$mode" == "global" || "$mode" == "project" || "$mode" == "workspace" ]] || {
     echo "Error: mode must be 'global' or 'project'." >&2
     return 1
   }
+  if [[ "$mode" == "workspace" ]]; then
+    mode="project"
+  fi
 
   if [[ "${requested[0]}" == "all" ]]; then
     requested=()
