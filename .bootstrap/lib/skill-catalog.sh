@@ -302,14 +302,17 @@ sync_global_agents_file() {
   local metadata_file
   local -a skill_lines=()
   local -a selected_files=()
+  local skill_count
 
   collect_selected_skill_metadata_files "global"
   selected_files=("${SELECTED_SKILL_METADATA_FILES[@]}")
+  skill_count="${#selected_files[@]}"
 
-  for metadata_file in "${selected_files[@]}"; do
-    load_skill_metadata "$metadata_file"
-    skill_lines+=("- \`$NAME\`: Type \`$TYPE\` | Target \`$TARGET_DIR\` | Source \`$REPO_URL\`")
-  done
+  skill_lines+=("- Managed by this bootstrap as a compact global reference.")
+  skill_lines+=("- Recorded global skills: \`$skill_count\`.")
+  skill_lines+=("- Metadata directory: \`$PROJECT_STATE_DIR\`.")
+  skill_lines+=("- Global skills root: \`$GLOBAL_SKILLS_DIR\`.")
+  skill_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./scripts/list_skills.sh\`.")
 
   sync_agents_block \
     "$GLOBAL_AGENTS_FILE" \

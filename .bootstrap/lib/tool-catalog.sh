@@ -18,13 +18,14 @@ SUPPORTED_TOOL_BUNDLES=(
   "pdf-images"
   "diagrams"
   "browser-automation"
+  "composio-cli"
 )
 
 usage_install_tools() {
   cat <<'EOF'
 Usage:
   ./scripts/install_tools.sh all
-  ./scripts/install_tools.sh core documents
+  ./scripts/install_tools.sh core documents composio-cli
   ./scripts/install_tools.sh --mode global all
   ./scripts/install_tools.sh --mode project documents browser-automation
 EOF
@@ -34,7 +35,7 @@ usage_update_tools() {
   cat <<'EOF'
 Usage:
   ./scripts/update_tools.sh all
-  ./scripts/update_tools.sh core documents
+  ./scripts/update_tools.sh core documents composio-cli
 EOF
 }
 
@@ -279,17 +280,17 @@ sync_global_agents_file() {
   local metadata_file
   local -a bundle_lines=()
   local -a selected_files=()
+  local bundle_count
 
   collect_selected_tool_metadata_files "global"
   selected_files=("${SELECTED_TOOL_METADATA_FILES[@]}")
+  bundle_count="${#selected_files[@]}"
 
-  for metadata_file in "${selected_files[@]}"; do
-    load_tool_metadata "$metadata_file"
-    bundle_lines+=("- \`$NAME\`: Target \`$TARGET_DIR\` | Commands \`$COMMANDS\` | Packages \`$PACKAGES\`")
-    if [[ -n "$NOTES" ]]; then
-      bundle_lines+=("  Note: $NOTES")
-    fi
-  done
+  bundle_lines+=("- Managed by this bootstrap as a compact global reference.")
+  bundle_lines+=("- Recorded global tool bundles: \`$bundle_count\`.")
+  bundle_lines+=("- Metadata directory: \`$PROJECT_STATE_DIR\`.")
+  bundle_lines+=("- Global workbench root: \`$GLOBAL_TOOL_ROOT\`.")
+  bundle_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./scripts/list_tools.sh\`.")
 
   sync_agents_block \
     "$GLOBAL_AGENTS_FILE" \
@@ -381,6 +382,18 @@ EOF
   chmod +x "$wrapper_dir/codex-python" "$wrapper_dir/codex-markitdown"
 }
 
+ensure_composio_wrapper() {
+  mkdir -p "$GLOBAL_BIN_DIR"
+  cat >"$GLOBAL_BIN_DIR/composio" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+COMPOSIO_INSTALL_DIR="${COMPOSIO_INSTALL_DIR:-$HOME/.composio}"
+"$COMPOSIO_INSTALL_DIR/composio" "$@"
+EOF
+  chmod +x "$GLOBAL_BIN_DIR/composio"
+}
+
 install_global_python_documents() {
   local python_bin
 
@@ -392,7 +405,7 @@ install_global_python_documents() {
 
   "$python_bin" -m venv "$GLOBAL_PYTHON_VENV"
   "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade pip
-  "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown
+  "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
   ensure_python_wrapper "$GLOBAL_PYTHON_VENV/bin/python" "$GLOBAL_BIN_DIR"
 }
 
@@ -410,7 +423,7 @@ install_project_python_documents() {
 
   "$python_bin" -m venv "$python_venv"
   "$python_venv/bin/python" -m pip install --upgrade pip
-  "$python_venv/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown
+  "$python_venv/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
   ensure_python_wrapper "$python_venv/bin/python" "$PROJECT_BIN_DIR"
 }
 
@@ -455,13 +468,13 @@ install_documents_bundle() {
   ensure_command npm
   if [[ "$mode" == "global" ]]; then
     ensure_homebrew
-    run_brew install pandoc
+    run_brew install pandoc pymupdf
     install_global_python_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV" "codex-python,codex-markitdown,pandoc" "brew:pandoc|python:openpyxl,python-docx,python-pptx,markitdown" "Global document workbench for Office generation and Office/PDF extraction."
+    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV|/opt/homebrew|/usr/local" "codex-python,codex-markitdown,pandoc,pymupdf" "brew:pandoc,pymupdf|python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf" "Global document workbench for Office generation, extraction, and PDF parsing, including PyMuPDF."
     sync_global_agents_file
   else
     install_project_python_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown" "Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool."
+    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf" "Workspace mode installs the Python document tools locally. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools."
   fi
 }
 
@@ -506,6 +519,21 @@ install_browser_automation_bundle() {
   fi
 }
 
+install_composio_cli_bundle() {
+  local mode="$1"
+
+  if [[ "$mode" == "project" ]]; then
+    echo "Bundle 'composio-cli' supports global mode only." >&2
+    return 1
+  fi
+
+  ensure_command curl
+  ensure_command unzip
+  curl -fsSL https://composio.dev/install | bash
+  ensure_composio_wrapper
+  write_tool_metadata "composio-cli" "$mode" "global_only" "$HOME/.composio|$GLOBAL_BIN_DIR" "composio" "script:https://composio.dev/install" "Composio CLI is installed via the official installer into ~/.composio, and the bootstrap adds a stable wrapper in ~/.local/bin."
+}
+
 install_tool_bundle_by_name() {
   local bundle="$1"
   local mode="$2"
@@ -516,6 +544,7 @@ install_tool_bundle_by_name() {
     pdf-images) install_pdf_images_bundle "$mode" ;;
     diagrams) install_diagrams_bundle "$mode" ;;
     browser-automation) install_browser_automation_bundle "$mode" ;;
+    composio-cli) install_composio_cli_bundle "$mode" ;;
     *)
       echo "Error: Unsupported tool bundle: $bundle" >&2
       exit 1

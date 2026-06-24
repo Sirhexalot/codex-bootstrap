@@ -24,6 +24,7 @@ These visible scripts are user-facing commands. The real bootstrap logic lives u
 - `pdf-images`
 - `diagrams`
 - `browser-automation`
+- `composio-cli`
 
 ## Currently Supported Skill Sources
 

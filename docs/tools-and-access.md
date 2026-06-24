@@ -4,21 +4,22 @@ This file documents which global workbench tools and project-specific systems ma
 
 ## Workbench Tools
 
-- Tool bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`
+- Tool bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`, `composio-cli`
 - Scope model: tools and skills can be installed as `global` or `workspace`
 - Native priority: system tools first, Python or Node only as targeted supplements
 - Global Python workbench: `~/.codex/workbench/python`
 - Global Python entrypoint: `codex-python`
 - Global extractor entrypoint: `codex-markitdown`
-- Global installations are also synchronized into `~/.codex/AGENTS.md`
+- Global installations are also synchronized into `~/.codex/AGENTS.md` as compact reference blocks
 
 ## Bundle Capabilities
 
 - `core`: Git, Curl, `rg`, base Python, base Node, `pipx`
-- `documents`: Office and document extraction helpers, Pandoc, Python document libraries
+- `documents`: Office and document extraction helpers, Pandoc, the Homebrew `pymupdf` formula on macOS, and Python document libraries including `pypdf` and `pymupdf`
 - `pdf-images`: `ffmpeg`, ImageMagick, Ghostscript
 - `diagrams`: Draw.io
 - `browser-automation`: `pnpm`, Playwright
+- `composio-cli`: Composio CLI for connected app tooling from the terminal
 
 ## Project-Relevant Systems
 
@@ -27,6 +28,6 @@ This file documents which global workbench tools and project-specific systems ma
 ## Access Rules
 
 - Tools and skills follow the same scope model.
-- Installation scripts synchronize managed global entries into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
+- Installation scripts synchronize compact managed global references into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
 - Credentials must not be stored in project files.
 - External write actions require explicit approval.

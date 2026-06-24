@@ -49,6 +49,7 @@ tools:
     - "pdf-images"
     - "diagrams"
     - "browser-automation"
+    - "composio-cli"
   required:
     - "Codex"
     - "Python"

@@ -105,6 +105,7 @@ tools:
     - "pdf-images"
     - "diagrams"
     - "browser-automation"
+    - "composio-cli"
   required:
     - "Codex"
     - "Python"
@@ -170,7 +171,7 @@ EOF
 ## Workbench Tools
 
 - Python: \`global\`
-- Tool bundles: \`core, documents, pdf-images, diagrams, browser-automation\`
+- Tool bundles: \`core, documents, pdf-images, diagrams, browser-automation, composio-cli\`
 - Scope model: \`global or workspace\`
 - Native priority: \`system tools first, Python or Node only as targeted supplements\`
 - Global Python workbench: \`~/.codex/workbench/python\`
@@ -185,7 +186,7 @@ EOF
 ## Access Rules
 
 - Tools and skills can be installed in global or workspace mode.
-- Installation scripts synchronize managed global tools and skills into \`~/.codex/AGENTS.md\` and managed project entries into \`./AGENTS.md\`.
+- Installation scripts synchronize compact managed global references into \`~/.codex/AGENTS.md\` and managed project entries into \`./AGENTS.md\`.
 - Credentials are not stored in project files.
 - External write actions require explicit approval.
 EOF

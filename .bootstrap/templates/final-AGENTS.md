@@ -35,7 +35,7 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 
 - Workbench tools are global and are not installed into the project itself.
 - Skills can be installed globally or per project.
-- Installation scripts synchronize managed global entries into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
+- Installation scripts synchronize compact managed global references into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
 - Use the following commands for skill management:
   - `./scripts/install_skills.sh`
   - `./scripts/update_skill.sh`

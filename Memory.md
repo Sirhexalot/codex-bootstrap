@@ -34,7 +34,7 @@ This file is the shared project memory for this bootstrap repository.
   - New tool catalogs under `.bootstrap/lib/tool-catalog.sh` and `.bootstrap/lib/tool-catalog.ps1`.
   - New visible scripts for tool installation, update, and listing.
   - Default bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`.
-  - Managed global tool installs are synchronized into `~/.codex/AGENTS.md`.
+  - Managed global installs are synchronized into `~/.codex/AGENTS.md` as compact reference blocks.
 
 ### 2026-06-24 - English output unification and managed skill inventory audit
 

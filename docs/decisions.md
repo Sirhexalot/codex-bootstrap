@@ -12,6 +12,6 @@ This file records important decisions for the concrete agent project.
 
 ### 2026-06-24 - Global AGENTS synchronization added for managed installs
 
-- Decision: synchronize managed global tools and skills into `~/.codex/AGENTS.md`, and synchronize managed project entries into `./AGENTS.md`.
+- Decision: synchronize compact managed global references into `~/.codex/AGENTS.md`, and synchronize managed project entries into `./AGENTS.md`.
 - Rationale: make the actual installed state visible where agents already look for operating context.
 - Status: `active`

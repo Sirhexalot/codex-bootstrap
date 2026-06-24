@@ -62,9 +62,11 @@ If this project has not been initialized for a concrete user yet, work in exactl
 - `drawio-diagrams-enhanced`: Type `skill` | Target `/Users/adrian/Desktop/Codex Setup/skills/drawio-diagrams-enhanced` | Source `https://github.com/jgtolentino/insightpulse-odoo.git`
 <!-- CODEX_PROJECT_SKILLS_END -->
 
+
+
 <!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
 ## Managed Project Tool Bundles
 
-- `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python.cmd,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown.cmd` | Packages `python:openpyxl,python-docx,python-pptx,markitdown`
-  Note: Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool.
+- `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown` | Packages `python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf`
+  Note: Workspace mode installs the Python document tools locally. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
 <!-- CODEX_PROJECT_TOOL_BUNDLES_END -->

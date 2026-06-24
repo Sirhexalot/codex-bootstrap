@@ -134,7 +134,7 @@ bootstrap-agent/
 - `setup-mac.sh`
 - `setup-windows.ps1`
 
-These install the global standard bundles for the workbench. That includes native base tools for Git, Curl, `rg`, Draw.io, PDF/image work, and browser automation, plus a central Python workbench under `~/.codex/workbench/python` for Office and document tasks. Daily-use wrappers such as `codex-python` and `codex-markitdown` are also created there.
+These install the global standard bundles for the workbench. That includes native base tools for Git, Curl, `rg`, Draw.io, PDF/image work, and browser automation, plus a central Python workbench under `~/.codex/workbench/python` for Office and document tasks. Daily-use wrappers such as `codex-python` and `codex-markitdown` are also created there, and the bundled document stack includes `pypdf`, `pymupdf`, and the native Homebrew `pymupdf` formula on macOS.
 
 ### Bootstrap Internals
 

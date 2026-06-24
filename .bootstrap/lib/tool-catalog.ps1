@@ -11,7 +11,7 @@ $script:GlobalPythonVenv = Join-Path $script:GlobalToolRoot "python"
 $script:GlobalBinDir = Join-Path $script:UserHome ".codex\bin"
 $script:GlobalAgentsFile = Join-Path $script:UserHome ".codex\AGENTS.md"
 $script:ProjectAgentsFile = Join-Path $script:ProjectRoot "AGENTS.md"
-$script:SupportedToolBundles = @("core", "documents", "pdf-images", "diagrams", "browser-automation")
+$script:SupportedToolBundles = @("core", "documents", "pdf-images", "diagrams", "browser-automation", "composio-cli")
 
 function Ensure-ToolBaseDirs {
   New-Item -ItemType Directory -Force -Path $script:ProjectStateDir, $script:ProjectToolsDir, $script:ProjectBinDir, $script:GlobalToolRoot, $script:GlobalBinDir | Out-Null
@@ -193,14 +193,13 @@ function Sync-AgentsBlock {
 function Sync-GlobalAgentsFile {
   $bundleLines = @()
   $selected = Get-SelectedToolMetadata -ModeFilter "global"
+  $bundleCount = $selected.Selected.Count
 
-  foreach ($entry in $selected.Selected) {
-    $meta = $entry.Meta
-    $bundleLines += "- ``$($meta["NAME"])``: Target ``$($meta["TARGET_DIR"])`` | Commands ``$($meta["COMMANDS"])`` | Packages ``$($meta["PACKAGES"])``"
-    if ($meta["NOTES"]) {
-      $bundleLines += "  Note: $($meta["NOTES"])"
-    }
-  }
+  $bundleLines += "- Managed by this bootstrap as a compact global reference."
+  $bundleLines += "- Recorded global tool bundles: ``$bundleCount``."
+  $bundleLines += "- Metadata directory: ``$script:ProjectStateDir``."
+  $bundleLines += "- Global workbench root: ``$script:GlobalToolRoot``."
+  $bundleLines += "- Inspect the current inventory from ``$script:ProjectRoot`` with ``./scripts/list_tools.sh``."
 
   Sync-AgentsBlock -Path $script:GlobalAgentsFile -StartMarker "<!-- CODEX_GLOBAL_TOOL_BUNDLES_START -->" -EndMarker "<!-- CODEX_GLOBAL_TOOL_BUNDLES_END -->" -Heading "Managed Global Tool Bundles" -Lines $bundleLines
 }
@@ -249,7 +248,7 @@ function Install-DocumentsPythonGlobal {
   Invoke-BootstrapPython -m venv $script:GlobalPythonVenv
   $pythonExe = Get-VenvPythonExe -VenvPath $script:GlobalPythonVenv
   & $pythonExe -m pip install --upgrade pip
-  & $pythonExe -m pip install --upgrade openpyxl python-docx python-pptx markitdown
+  & $pythonExe -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
   Ensure-GlobalPythonWrappers -PythonExe $pythonExe
 }
 
@@ -260,7 +259,7 @@ function Install-DocumentsPythonProject {
   Invoke-BootstrapPython -m venv $venvPath
   $pythonExe = Get-VenvPythonExe -VenvPath $venvPath
   & $pythonExe -m pip install --upgrade pip
-  & $pythonExe -m pip install --upgrade openpyxl python-docx python-pptx markitdown
+  & $pythonExe -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
   Ensure-ProjectPythonWrappers -PythonExe $pythonExe
 }
 
@@ -273,6 +272,10 @@ function Install-BrowserAutomationProject {
   npm install --prefix $runtimeRoot playwright *> $null
   npx --prefix $runtimeRoot playwright install *> $null
   Set-Content -Path (Join-Path $script:ProjectBinDir "codex-playwright.cmd") -Value "@echo off`r`nnpx --prefix `"$runtimeRoot`" playwright %*`r`n"
+}
+
+function Install-ComposioCliGlobal {
+  npm install -g @composio/cli
 }
 
 function Install-ToolBundle {
@@ -296,12 +299,12 @@ function Install-ToolBundle {
       if ($Mode -eq "global") {
         winget install --id "JohnMacFarlane.Pandoc" --exact --source winget --accept-package-agreements --accept-source-agreements *> $null
         Install-DocumentsPythonGlobal
-        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir $script:GlobalPythonVenv -Commands "codex-python,codex-markitdown,pandoc" -Packages "winget:pandoc|python:openpyxl,python-docx,python-pptx,markitdown" -Notes "Global document workbench for Office generation and Office/PDF extraction."
+        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir $script:GlobalPythonVenv -Commands "codex-python,codex-markitdown,pandoc" -Packages "winget:pandoc|python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf" -Notes "Global document workbench for Office generation, extraction, and PDF parsing, including PyMuPDF."
         Sync-GlobalAgentsFile
       } else {
         Install-DocumentsPythonProject
         $projectCommands = "$(Join-Path $script:ProjectBinDir "codex-python.cmd"),$(Join-Path $script:ProjectBinDir "codex-markitdown.cmd")"
-        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "documents") -Commands $projectCommands -Packages "python:openpyxl,python-docx,python-pptx,markitdown" -Notes "Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool."
+        Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "documents") -Commands $projectCommands -Packages "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf" -Notes "Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool."
       }
     }
     "pdf-images" {
@@ -326,6 +329,12 @@ function Install-ToolBundle {
         Install-BrowserAutomationProject
         Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_or_project" -TargetDir (Join-Path $script:ProjectToolsDir "browser-automation") -Commands (Join-Path $script:ProjectBinDir "codex-playwright.cmd") -Packages "npm:playwright" -Notes "Workspace mode creates a local Playwright runtime directory. pnpm remains globally preferred."
       }
+    }
+    "composio-cli" {
+      if ($Mode -eq "project") { throw "Bundle 'composio-cli' supports global mode only." }
+      Install-ComposioCliGlobal
+      $npmGlobalBin = Join-Path $env:APPDATA "npm"
+      Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_only" -TargetDir $npmGlobalBin -Commands "composio" -Packages "npm:@composio/cli" -Notes "Composio CLI uses the documented npm fallback on Windows because the official installer targets WSL or Unix-like shells."
     }
     default {
       throw "Unsupported tool bundle: $Name"
