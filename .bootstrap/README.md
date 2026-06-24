@@ -1,37 +1,39 @@
-# Bootstrap-Interna
+# Bootstrap Internals
 
-Dieser Ordner enthält die versteckte Bootstrap-Logik für dieses Repository.
+This folder contains the hidden bootstrap logic for this repository.
 
-## Zweck
+## Purpose
 
-- Initialisierung eines neuen Agentenprojekts
-- Vorlagen für die finale `AGENTS.md` und Projektdokumente
-- Metadaten über Bootstrap-Version und verwaltete Installationen
-- Skill-Kataloge und Skill-Installationsstatus
-- Vorlagen für Automatisierungen und Skills
+- initialize a new agent project
+- provide templates for the final `AGENTS.md` and project documents
+- store metadata about bootstrap versions and managed installations
+- track skill catalogs and skill installation state
+- provide templates for automations and skills
 
-## Für Agenten zuerst lesen
+## What Agents Should Read First
 
-Wenn dieses Repository noch nicht initialisiert ist, lies mindestens in dieser Reihenfolge:
+If this repository has not been initialized yet, read at least in this order:
 
 1. `.bootstrap/README.md`
 2. `.bootstrap/templates/final-AGENTS.md`
-3. `.bootstrap/scripts/bootstrap-project-init.sh` oder `.bootstrap/scripts/bootstrap-project-init.ps1`
+3. `.bootstrap/scripts/bootstrap-project-init.sh` or `.bootstrap/scripts/bootstrap-project-init.ps1`
 4. `.bootstrap/lib/skill-catalog.sh`
 
-## Wichtige Regeln
+## Important Rules
 
-- Die sichtbare `AGENTS.md` ist nur der Bootstrap-Einstieg.
-- Nach der Initialisierung gehört die sichtbare `AGENTS.md` dem konkreten Projekt.
-- Tools sind global.
-- Skills werden aus Original-Repositories geholt und pro Lauf als `global` oder `projektbezogen` installiert.
-- Projektsammlungen liegen bevorzugt unter `.bootstrap/skills-cache/`, damit der sichtbare Projektbereich sauber bleibt.
+- the visible `AGENTS.md` is only the bootstrap entry point
+- after initialization, the visible `AGENTS.md` belongs to the concrete project
+- tool bundles and skills can be installed in global or workspace mode depending on the task
+- native system tools stay globally preferred, while document-heavy Python or Node runtimes may be added locally when useful
+- skills are fetched from original repositories and installed per run as `global` or `workspace`
+- project collections should live under `.bootstrap/skills-cache/` so the visible project area stays clean
 
-## Interne Struktur
+## Internal Structure
 
-- `templates/`: Vorlagen für finale Agentendokumente, Automatisierungen und Skills
-- `scripts/`: Bootstrap-interne Initialisierungslogik
-- `lib/`: gemeinsam genutzte Shell-Helfer
-- `skill-installs/`: Metadaten zu verwalteten Skill-Installationen
-- `skills-cache/`: abgeschirmte projektbezogene Skill-Sammlungen
-- `manifest.json`: maschinenlesbare Bootstrap-Metadaten
+- `templates/`: templates for final agent docs, automations, and skills
+- `scripts/`: bootstrap-internal initialization logic
+- `lib/`: shared shell helpers
+- `tool-installs/`: metadata for managed tool installations
+- `skill-installs/`: metadata for managed skill installations
+- `skills-cache/`: isolated project-local skill collections
+- `manifest.json`: machine-readable bootstrap metadata

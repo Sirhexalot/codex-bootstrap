@@ -1,46 +1,70 @@
-# Bootstrap Einstieg
+# Bootstrap Entry
 
-Dieses Repository ist eine Bootstrap-Vorlage für kluge Codex-Agenten.
+This repository is a bootstrap template for capable Codex agents.
 
-Wenn dieses Projekt noch nicht für einen konkreten Nutzer initialisiert wurde, arbeite in genau dieser Reihenfolge:
+If this project has not been initialized for a concrete user yet, work in exactly this order:
 
-1. Lies [START_HERE.md](/Users/adrian/Desktop/Codex%20Setup/START_HERE.md).
-2. Lies [project.yaml](/Users/adrian/Desktop/Codex%20Setup/project.yaml).
-3. Lies [Memory.md](/Users/adrian/Desktop/Codex%20Setup/Memory.md).
-4. Lies [.bootstrap/README.md](/Users/adrian/Desktop/Codex%20Setup/.bootstrap/README.md).
-5. Lies danach die in `.bootstrap/README.md` genannten Bootstrap-Dateien.
+1. Read [START_HERE.md](/Users/adrian/Desktop/Codex%20Setup/START_HERE.md).
+2. Read [project.yaml](/Users/adrian/Desktop/Codex%20Setup/project.yaml).
+3. Read [Memory.md](/Users/adrian/Desktop/Codex%20Setup/Memory.md).
+4. Read [.bootstrap/README.md](/Users/adrian/Desktop/Codex%20Setup/.bootstrap/README.md).
+5. Then read the bootstrap files referenced from `.bootstrap/README.md`.
 
-## Bootstrap-Regel
+## Bootstrap Rule
 
-- Die generische Bootstrap-Logik lebt unter `.bootstrap/`.
-- Die sichtbaren Skripte unter `scripts/` sind nur Einstiegspunkte.
-- Während der Initialisierung sollst du den Nutzer interviewen und daraus das eigentliche Projekt erzeugen.
-- Nach erfolgreicher Initialisierung wird diese Datei durch eine projektspezifische `AGENTS.md` ersetzt.
+- Generic bootstrap logic lives under `.bootstrap/`.
+- The visible scripts under `scripts/` are only entry points.
+- During initialization, interview the user and build the real project from that conversation.
+- After successful initialization, this file is replaced by a project-specific `AGENTS.md`.
 
-## Was Du Beim Onboarding Erheben Sollst
+## Onboarding Information to Collect
 
-- Name des Nutzers
-- Name des Agenten
-- Projektname
-- Zweck und Rolle des Agenten
-- Land
-- Zeitzone
-- Sprache und Ton
-- sensible Grenzen und No-Gos
-- wichtige Tools, Systeme oder Kanäle
+- user name
+- agent name
+- project name
+- agent purpose and role
+- country
+- timezone
+- language and tone
+- sensitive boundaries and no-gos
+- important tools, systems, or channels
 
-## Skill-Regel
+## Skill Rule
 
-- Tools gehören zur globalen Werkbank.
-- Skills kommen immer aus Original-Repositories.
-- Bei Skill-Installationen muss zwischen `global` und `projektbezogen` gewählt werden.
+- Tools and skills can be installed globally or in workspace mode.
+- Tool bundles should prefer native installation; Python or Node should only fill real gaps.
+- Skills always come from original repositories.
+- Tool and skill installs must choose between `global` and `workspace`.
 
-## Wichtige Skripte
+## Important Scripts
 
 - `./setup-mac.sh`
 - `./setup-windows.ps1`
 - `./scripts/init-project.sh`
 - `./scripts/init-project.ps1`
+- `./scripts/install_tools.sh`
+- `./scripts/install_tools.ps1`
+- `./scripts/update_tools.sh`
+- `./scripts/update_tools.ps1`
+- `./scripts/list_tools.sh`
+- `./scripts/list_tools.ps1`
 - `./scripts/install_skills.sh`
 - `./scripts/update_skills.sh`
 - `./scripts/list_skills.sh`
+
+
+
+
+
+<!-- CODEX_PROJECT_SKILLS_START -->
+## Managed Project Skills
+
+- `drawio-diagrams-enhanced`: Type `skill` | Target `/Users/adrian/Desktop/Codex Setup/skills/drawio-diagrams-enhanced` | Source `https://github.com/jgtolentino/insightpulse-odoo.git`
+<!-- CODEX_PROJECT_SKILLS_END -->
+
+<!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
+## Managed Project Tool Bundles
+
+- `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python.cmd,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown.cmd` | Packages `python:openpyxl,python-docx,python-pptx,markitdown`
+  Note: Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool.
+<!-- CODEX_PROJECT_TOOL_BUNDLES_END -->

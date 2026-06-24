@@ -1,0 +1,8 @@
+{
+  "name": "codex-agent-bootstrap",
+  "private": true,
+  "scripts": {
+    "setup": "npx -p imap-mcp-server imap-setup",
+    "imap:mcp": "npx -y imap-mcp-server"
+  }
+}

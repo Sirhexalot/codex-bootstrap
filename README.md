@@ -1,23 +1,24 @@
 # Codex Agent Bootstrap
 
-Dieses Repository ist ein Startpaket, das du einem Freund, Team oder Kunden geben kannst, damit daraus ein sauber aufgesetzter Codex-Agent entsteht.
+This repository is a starter kit you can hand to a friend, team, or customer so it can become a well-structured Codex agent.
 
-Die Idee ist bewusst zweistufig:
+The design is intentionally two-step:
 
-1. Die Root-Setup-Skripte richten die Werkbank global ein.
-2. Die Projektinitialisierung verwandelt diesen Ordner in einen konkreten Agenten mit eigener Identität, eigener `AGENTS.md` und eigenen Projektdokumenten.
+1. the root setup scripts prepare the global workbench
+2. project initialization turns this folder into a concrete agent with its own identity, `AGENTS.md`, and project documents
 
-## Was Dieses Repository Leisten Soll
+## What This Repository Should Provide
 
-- Einen neuen Agenten schnell startklar machen
-- globale Werkbank-Tools auf macOS und Windows vorbereiten
-- ein strukturiertes Onboarding für den eigentlichen Agenten liefern
-- Skills aus Original-Repositories installierbar und updatebar machen
-- die spätere Projektstruktur sauber halten, indem Bootstrap-Interna unter `.bootstrap/` liegen
+- a fast path to a usable new agent
+- global workbench tooling for macOS and Windows
+- tool bundles installable in global or workspace mode
+- structured onboarding for the real agent
+- skills installable and updateable from original repositories
+- a clean future project structure, with bootstrap internals living under `.bootstrap/`
 
-## Schnellstart
+## Quick Start
 
-### 1. Werkbank global vorbereiten
+### 1. Prepare the Global Workbench
 
 macOS:
 
@@ -32,32 +33,55 @@ Windows:
 .\setup-windows.ps1
 ```
 
-Diese Skripte installieren nur globale Werkbank-Tools. Sie installieren **kein Codex**, keine projektbezogenen Dateien und keine Skills.
+These scripts install global workbench tooling only. They do **not** install Codex, project-specific files, or skills.
 
-### 2. Projekt in Codex öffnen
+### 2. Open the Project in Codex
 
-Öffne den Ordner in Codex und schreibe:
+Open the folder in Codex and write:
 
 ```text
-Bitte initialisiere dieses Projekt als Kunden-Agent.
+Please initialize this project as a customer agent.
 ```
 
-Der Agent soll dann:
+The agent should then:
 
-- zuerst die Bootstrap-Dateien lesen
-- ein Interview führen
-- die Projektidentität erfassen
-- die finale `AGENTS.md` schreiben
-- `project.yaml`, `Memory.md`, `docs/` und `automations/heartbeat/` passend ausfüllen
+- read the bootstrap files first
+- run an interview
+- capture the project identity
+- write the final `AGENTS.md`
+- fill in `project.yaml`, `Memory.md`, `docs/`, and `automations/heartbeat/`
 
-### 3. Skills bewusst installieren
+### 3. Install Tool Bundles Intentionally
 
-Die Skill-Skripte fragen immer nach dem Zielmodus:
+The tool scripts ask for a target mode:
 
 - `global`
-- `projektbezogen`
+- `workspace`
 
-Verfügbare Befehle:
+Available commands:
+
+```bash
+./scripts/install_tools.sh
+./scripts/update_tools.sh
+./scripts/list_tools.sh
+```
+
+Default bundles:
+
+- `core`
+- `documents`
+- `pdf-images`
+- `diagrams`
+- `browser-automation`
+
+### 4. Install Skills Intentionally
+
+The skill scripts also ask for a target mode:
+
+- `global`
+- `workspace`
+
+Available commands:
 
 ```bash
 ./scripts/install_skills.sh
@@ -65,7 +89,27 @@ Verfügbare Befehle:
 ./scripts/list_skills.sh
 ```
 
-## Struktur
+### 5. Optionally Wire In the IMAP MCP Server
+
+If you want email access over IMAP as an MCP server, you can use the published `imap-mcp-server` directly through `npx`. This project includes a thin npm wrapper:
+
+```bash
+npm run setup
+```
+
+That command starts the web setup assistant from `imap-mcp-server`. There is also a direct MCP runner:
+
+```bash
+npm run imap:mcp
+```
+
+Notes:
+
+- according to the upstream project, accounts are stored encrypted in `~/.imap-mcp/accounts.json`
+- no external repository is committed into this bootstrap project
+- the integration uses the published npm package and stays easy to update
+
+## Structure
 
 ```text
 bootstrap-agent/
@@ -83,46 +127,50 @@ bootstrap-agent/
 └─ setup-windows.ps1
 ```
 
-## Trennung der Verantwortlichkeiten
+## Responsibility Boundaries
 
-### Globale Werkbank-Setups
+### Global Workbench Setup
 
 - `setup-mac.sh`
 - `setup-windows.ps1`
 
-Installieren globale Werkzeuge wie Python, Node, Git, FFmpeg, ImageMagick, Ghostscript, `pipx`, `pnpm` und Playwright.
+These install the global standard bundles for the workbench. That includes native base tools for Git, Curl, `rg`, Draw.io, PDF/image work, and browser automation, plus a central Python workbench under `~/.codex/workbench/python` for Office and document tasks. Daily-use wrappers such as `codex-python` and `codex-markitdown` are also created there.
 
-### Bootstrap-Interna
+### Bootstrap Internals
 
 - `.bootstrap/`
 
-Enthält Vorlagen, Metadaten, Skill-Kataloge und Hilfslogik für Initialisierung und Skill-Verwaltung.
+Contains templates, metadata, skill catalogs, and helper logic for initialization and skill management.
 
-### Sichtbare Projektbefehle
+### Visible Project Commands
 
 - `scripts/init-project.sh`
 - `scripts/init-project.ps1`
+- `scripts/install_tools.sh`
+- `scripts/update_tools.sh`
+- `scripts/list_tools.sh`
 - `scripts/install_skills.sh`
 - `scripts/update_skills.sh`
 - `scripts/list_skills.sh`
 
-Das sind schlanke Einstiegspunkte. Die eigentliche Logik liegt unter `.bootstrap/`.
+These are thin entry points. The real logic lives under `.bootstrap/`.
 
-Merksatz:
+Shortcut summary:
 
-- `setup-*` richtet den Rechner ein.
-- `scripts/init-project.*` initialisiert dieses Projekt.
-- `.bootstrap/scripts/bootstrap-project-init.*` ist nur die interne Implementierung dahinter.
+- `setup-*` prepares the machine
+- `scripts/install_tools.*` manages tool bundles in global or workspace mode
+- `scripts/init-project.*` initializes this project
+- `.bootstrap/scripts/bootstrap-project-init.*` is only the internal implementation behind it
 
-## Skill-Prinzip
+## Skill Principles
 
-- Skills immer aus Original-Repositories
-- Tools immer global
-- Skills pro Installationslauf ausdrücklich `global` oder `projektbezogen`
-- größere projektspezifische Skill-Sammlungen landen versteckt unter `.bootstrap/skills-cache/`, damit der sichtbare Projektordner sauber bleibt
+- tools are managed as bundles and can be `global` or `workspace` depending on the bundle
+- skills always come from original repositories
+- each skill install explicitly chooses `global` or `workspace`
+- larger project-specific skill collections should live under `.bootstrap/skills-cache/` so the visible project root stays clean
 
-## Nach der Initialisierung
+## After Initialization
 
-Nach dem ersten Onboarding gehört die sichtbare `AGENTS.md` vollständig dem konkreten Agentenprojekt.
+After the first onboarding run, the visible `AGENTS.md` belongs entirely to the concrete agent project.
 
-Die Bootstrap-Regeln bleiben nur noch unter `.bootstrap/`, damit der neue Nutzer einen klaren, nicht überladenen Projektarbeitsbereich hat.
+The bootstrap-specific rules remain only under `.bootstrap/`, so the new user gets a clear, uncluttered project workspace.

@@ -1,29 +1,29 @@
-# Start Hier
+# Start Here
 
-Dieser Ordner ist noch kein fertiger Kunden-Agent. Er ist ein Bootstrap.
+This folder is not yet a finished customer agent. It is a bootstrap.
 
-Wenn du diesen Ordner in Codex öffnest, soll der Agent zuerst die Bootstrap-Dateien lesen, dann dich interviewen und daraus einen echten Agenten für dein Projekt machen.
+When you open this folder in Codex, the agent should read the bootstrap files first, interview you, and turn the repository into a real agent for your project.
 
-## Empfohlener erster Prompt
+## Recommended First Prompt
 
 ```text
-Bitte initialisiere dieses Projekt als Kunden-Agent.
+Please initialize this project as a customer agent.
 ```
 
-## Was dann passieren soll
+## What Should Happen Next
 
-Der Agent soll:
+The agent should:
 
-1. `AGENTS.md`, `project.yaml`, `Memory.md` und `.bootstrap/README.md` lesen
-2. dich zu Nutzername, Agentenname, Zweck, Rolle, Land, Zeitzone, Sprache, Ton und Grenzen befragen
-3. die finale `AGENTS.md` für dein Projekt schreiben
-4. `project.yaml`, `docs/` und `Memory.md` auf deinen Kontext anpassen
-5. die Standard-Automatisierung `Heartbeat` anlegen oder aktualisieren
-6. dir zeigen, wie du Skills global oder projektbezogen installierst
+1. read `AGENTS.md`, `project.yaml`, `Memory.md`, and `.bootstrap/README.md`
+2. ask about the user name, agent name, purpose, role, country, timezone, language, tone, and boundaries
+3. write the final `AGENTS.md` for the project
+4. adapt `project.yaml`, `docs/`, and `Memory.md` to the real context
+5. create or update the default `Heartbeat` automation
+6. show how to install tool bundles and skills globally or in workspace mode
 
-## Werkbank zuerst
+## Prepare the Workbench First
 
-Falls die lokale Umgebung noch nicht vorbereitet ist:
+If the local environment is not prepared yet:
 
 macOS:
 
@@ -38,10 +38,10 @@ Windows:
 .\setup-windows.ps1
 ```
 
-Diese Skripte installieren nur globale Werkbank-Tools. Codex selbst wird hier nicht installiert.
+These scripts install the global standard bundles for the workbench. Codex itself is not installed here.
 
-## Wichtige Unterscheidung
+## Important Distinction
 
-- `setup-mac.sh` und `setup-windows.ps1` bereiten den Rechner vor.
-- `scripts/init-project.sh` und `scripts/init-project.ps1` initialisieren dieses konkrete Projekt.
-- Interne Bootstrap-Logik liegt getrennt unter `.bootstrap/`.
+- `setup-mac.sh` and `setup-windows.ps1` prepare the machine.
+- `scripts/init-project.sh` and `scripts/init-project.ps1` initialize this specific project.
+- Internal bootstrap logic lives separately under `.bootstrap/`.

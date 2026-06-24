@@ -79,9 +79,9 @@ agent:
   primary_users:
     - "$user_name"
   out_of_scope:
-    - "Keine externen Aktionen mit Wirkung auf Kunden, Konten, Daten oder Kosten ohne klare Freigabe."
-    - "Keine Zugangsdaten, API-Keys oder Tokens in Projektdateien speichern."
-    - "Keine produktiven Automatisierungen ohne dokumentierten Zweck, Zugriff und Abbruchkriterien aktivieren."
+    - "No external actions affecting customers, accounts, data, or costs without explicit approval."
+    - "Do not store credentials, API keys, or tokens in project files."
+    - "Do not enable production automations without documented purpose, access, and stop criteria."
   boundaries: "$boundaries"
 
 memory:
@@ -97,8 +97,14 @@ folders:
   bootstrap: ".bootstrap"
 
 tools:
-  workstation_scope: "global"
+  tools_scope: "global_or_project"
   skills_scope: "global_or_project"
+  bundles:
+    - "core"
+    - "documents"
+    - "pdf-images"
+    - "diagrams"
+    - "browser-automation"
   required:
     - "Codex"
     - "Python"
@@ -108,7 +114,7 @@ tools:
     - "$tools"
 
 onboarding:
-  first_prompt: "Bitte initialisiere dieses Projekt als Kunden-Agent."
+  first_prompt: "Please initialize this project as a customer agent."
   read_first:
     - "project.yaml"
     - "AGENTS.md"
@@ -121,127 +127,124 @@ heartbeat:
   schedule: "weekdays hourly from 09:00 to 17:00"
   timezone: "$timezone"
   automation_path: "automations/heartbeat"
-  purpose: "Regelmäßig prüfen, ob Memory, Dokumentation, Entscheidungen und Runbooks gepflegt sind."
+  purpose: "Regularly check whether memory, documentation, decisions, and runbooks are being maintained."
 EOF
   }
 
   write_customer_context() {
     cat > "$root_dir/docs/customer-context.md" <<EOF
-# Kundenkontext
+# Customer Context
 
-## Nutzer und Projekt
+## User and Project
 
-- Nutzername: \`$user_name\`
-- Agentenname: \`$agent_name\`
-- Projektname: \`$project_name\`
-- Kunde, Team oder Organisation: \`$customer\`
-- Rolle oder Schwerpunkt: \`$role\`
+- User name: \`$user_name\`
+- Agent name: \`$agent_name\`
+- Project name: \`$project_name\`
+- Customer, team, or organization: \`$customer\`
+- Role or focus: \`$role\`
 
-## Ziel
+## Goal
 
-- Zweck: \`$purpose\`
-- Arbeitsweise: \`Der Agent arbeitet wie ein verlässlicher Coworker, liest erst Kontext, liefert konkrete Ergebnisse und holt vor externen oder irreversiblen Schritten Freigaben ein.\`
-- Wichtige Ergebnisse: \`Dokumentation, Entscheidungen, Automatisierungen, Artefakte und klare nächste Schritte.\`
+- Purpose: \`$purpose\`
+- Working style: \`The agent works like a reliable coworker, reads context first, delivers concrete results, and asks for approval before external or irreversible steps.\`
+- Key outcomes: \`Documentation, decisions, automations, artifacts, and clear next steps.\`
 
-## Kontext
+## Context
 
-- Land: \`$country\`
-- Zeitzone: \`$timezone\`
-- Sprache: \`$language\`
-- Ton: \`$tone\`
+- Country: \`$country\`
+- Timezone: \`$timezone\`
+- Language: \`$language\`
+- Tone: \`$tone\`
 
-## Grenzen
+## Boundaries
 
-- Sensible Bereiche: \`$boundaries\`
-- Externe oder irreversible Aktionen nur nach Freigabe
+- Sensitive areas: \`$boundaries\`
+- External or irreversible actions require approval
 EOF
   }
 
   write_tools_doc() {
     cat > "$root_dir/docs/tools-and-access.md" <<EOF
-# Tools und Zugriffe
+# Tools and Access
 
-## Werkbank-Tools
+## Workbench Tools
 
 - Python: \`global\`
-- Node.js: \`global\`
-- Git: \`global\`
-- FFmpeg: \`global\`
-- ImageMagick: \`global\`
-- Ghostscript: \`global\`
-- pipx: \`global\`
-- pnpm: \`global\`
-- Playwright: \`global\`
+- Tool bundles: \`core, documents, pdf-images, diagrams, browser-automation\`
+- Scope model: \`global or workspace\`
+- Native priority: \`system tools first, Python or Node only as targeted supplements\`
+- Global Python workbench: \`~/.codex/workbench/python\`
+- Global Python entrypoint: \`codex-python\`
+- Global extractor entrypoint: \`codex-markitdown\`
 
-## Projektrelevante Systeme
+## Project-Relevant Systems
 
-- Wichtige Tools oder Plattformen: \`$tools\`
-- Bevorzugte Kanäle: \`$channels\`
+- Important tools or platforms: \`$tools\`
+- Preferred channels: \`$channels\`
 
-## Zugriffsregeln
+## Access Rules
 
-- Tools gehören immer zur globalen Werkbank.
-- Skills können global oder projektbezogen installiert werden.
-- Zugangsdaten werden nicht in Projektdateien gespeichert.
-- Externe Schreibaktionen brauchen klare Freigaben.
+- Tools and skills can be installed in global or workspace mode.
+- Installation scripts synchronize managed global tools and skills into \`~/.codex/AGENTS.md\` and managed project entries into \`./AGENTS.md\`.
+- Credentials are not stored in project files.
+- External write actions require explicit approval.
 EOF
   }
 
   write_decisions_doc() {
     cat > "$root_dir/docs/decisions.md" <<EOF
-# Entscheidungen
+# Decisions
 
-## Entscheidungen
+## Decisions
 
-### $(date +%F) - Projekt initialisiert
+### $(date +%F) - Project initialized
 
-- Entscheidung: Dieses Repository wurde in einen konkreten Agenten für \`$user_name\` überführt.
-- Grund: Der Bootstrap soll ab jetzt als echter Projektrahmen für \`$agent_name\` dienen.
-- Alternativen: Die generische Bootstrap-AGENTS-Datei beibehalten.
-- Auswirkungen: Die sichtbare \`AGENTS.md\` ist jetzt projektspezifisch, Werkbank-Tools bleiben global und Skills sind wählbar zwischen global und projektbezogen.
-- Status: \`aktiv\`
+- Decision: This repository was turned into a concrete agent for \`$user_name\`.
+- Rationale: The bootstrap should now act as the real project frame for \`$agent_name\`.
+- Alternatives: Keep the generic bootstrap AGENTS file.
+- Impact: The visible \`AGENTS.md\` is now project-specific, and tool bundles and skills can be chosen in global or workspace mode.
+- Status: \`active\`
 EOF
   }
 
   write_memory() {
     cat > "$root_dir/Memory.md" <<EOF
-# Projekt-Memory
+# Project Memory
 
-## Überblick
+## Overview
 
-- Projektname: \`$project_name\`
-- Nutzer: \`$user_name\`
+- Project name: \`$project_name\`
+- User: \`$user_name\`
 - Agent: \`$agent_name\`
-- Zweck: \`$purpose\`
-- Rolle: \`$role\`
-- Land: \`$country\`
-- Zeitzone: \`$timezone\`
+- Purpose: \`$purpose\`
+- Role: \`$role\`
+- Country: \`$country\`
+- Timezone: \`$timezone\`
 
-## Stabile Regeln
+## Stable Rules
 
-- Werkbank-Tools sind global.
-- Skills werden per Skript als \`global\` oder \`projektbezogen\` installiert.
-- Externe oder irreversible Aktionen brauchen Freigabe.
-- Relevante Projektänderungen werden hier dokumentiert.
+- Tool bundles and skills are installed by script in \`global\` or \`workspace\` mode.
+- External or irreversible actions require approval.
+- Relevant project changes are documented here.
 
-## Offene Punkte
+## Open Points
 
-- Erste produktive Use Cases schärfen
-- Relevante Tools und Kanäle konkret verbinden
+- sharpen the first productive use cases
+- connect the relevant tools and channels in concrete terms
 
-## Laufprotokoll
+## Run Log
 
-### $timestamp - Projekt initialisiert
+### $timestamp - Project initialized
 
-- Auslöser: Lokales Bootstrap-Initialisierungsskript
-- Ziel: Aus der Vorlage einen konkreten Agenten machen
-- Ergebnisse:
-  - Finale \`AGENTS.md\` für \`$agent_name\` geschrieben
-  - \`project.yaml\`, \`docs/\` und \`Memory.md\` auf den Projektkontext angepasst
-  - Heartbeat-Automatisierung angelegt oder aktualisiert
-- Nächste Schritte:
-  - Erste Tools und Kanäle konkretisieren
-  - Benötigte Skills global oder projektbezogen installieren
+- Trigger: local bootstrap initialization script
+- Goal: turn the template into a concrete agent
+- Results:
+  - wrote the final \`AGENTS.md\` for \`$agent_name\`
+  - adapted \`project.yaml\`, \`docs/\`, and \`Memory.md\` to the project context
+  - created or updated the Heartbeat automation
+- Next steps:
+  - define the first concrete tools and channels
+  - install the required tool bundles and skills in global or workspace mode
 EOF
   }
 
@@ -255,79 +258,51 @@ EOF
   },
   "initialized": true,
   "initializedAt": "$timestamp",
-  "project": {
-    "name": "$project_name",
-    "userName": "$user_name",
-    "agentName": "$agent_name",
-    "customer": "$customer",
-    "country": "$country",
-    "timezone": "$timezone"
-  },
-  "managedEntrypoints": [
+  "entrypoints": [
     "setup-mac.sh",
     "setup-windows.ps1",
     "scripts/init-project.sh",
     "scripts/init-project.ps1",
     "scripts/install_skills.sh",
     "scripts/update_skill.sh",
+    "scripts/update_skills.sh",
     "scripts/list_skills.sh"
+  ],
+  "managedAreas": [
+    ".bootstrap/templates/",
+    ".bootstrap/scripts/",
+    ".bootstrap/lib/",
+    ".bootstrap/skill-installs/",
+    ".bootstrap/skills-cache/"
+  ],
+  "notes": [
+    "Workbench tools are global.",
+    "Skills are fetched from original repositories.",
+    "The visible AGENTS.md is replaced with a project-specific version after initialization."
   ]
 }
 EOF
   }
 
-  create_heartbeat_automation() {
-    local heartbeat_dir="$root_dir/automations/heartbeat"
-    mkdir -p "$heartbeat_dir"
-    cp "$root_dir/.bootstrap/templates/automation-template/README.md" "$heartbeat_dir/README.md"
-    cp "$root_dir/.bootstrap/templates/automation-template/Runbook.md" "$heartbeat_dir/Runbook.md"
-    cat > "$heartbeat_dir/Memory.md" <<EOF
-# Heartbeat Memory
-
-## Automatisierung
-
-- Name: \`Heartbeat\`
-- Zweck: Regelmäßig prüfen, ob Memory, Dokumentation, offene Punkte und Projektkonventionen gepflegt sind.
-- Status: \`aktiv vorgesehen\`
-
-## Laufprotokoll
-
-### $timestamp - Angelegt
-
-- Auslöser: Projektinitialisierung
-- Ziel: Standard-Heartbeat anlegen
-- Ergebnis:
-  - \`automations/heartbeat/README.md\`
-  - \`automations/heartbeat/Runbook.md\`
-  - \`automations/heartbeat/Memory.md\`
-- Nächste Schritte:
-  - Als werktägliche stündliche Automatisierung aktivieren
-EOF
-  }
-
-  echo "Initialisiere dieses Projekt als konkreten Agenten."
-  echo "Es werden nur Dateien in diesem Ordner geändert."
-  echo "$root_dir"
-  echo
-
+  timestamp="$(date +"%Y-%m-%d %H:%M %Z")"
   timezone="$(detect_timezone)"
-  timestamp="$(date '+%Y-%m-%d %H:%M %Z')"
-  project_name="$(prompt_default "Projektname" "Kunden-Agent")"
-  user_name="$(prompt_default "Name des Nutzers" "")"
-  agent_name="$(prompt_default "Name des Agenten" "Karl")"
-  customer="$(prompt_default "Kunde, Team oder Organisation" "$user_name")"
-  owner="$(prompt_default "Verantwortliche Person oder Team" "$user_name")"
-  purpose="$(prompt_default "Zweck des Agenten" "")"
-  role="$(prompt_default "Rolle oder Schwerpunkt des Agenten" "AI-Coworker")"
-  country="$(prompt_default "Land" "")"
-  timezone="$(prompt_default "Zeitzone" "$timezone")"
-  language="$(prompt_default "Sprache" "de")"
-  tone="$(prompt_default "Ton" "freundlich, präzise, pragmatisch")"
-  risk_level="$(prompt_default "Risikostufe" "medium")"
-  boundaries="$(prompt_default "Sensible Grenzen und No-Gos" "Keine externen Änderungen ohne Freigabe")"
-  tools="$(prompt_default "Wichtige Tools oder Systeme" "GitHub, Google Workspace, Slack")"
-  channels="$(prompt_default "Bevorzugte Kanäle" "Codex")"
+  project_name="$(prompt_default "Project name" "Customer Agent")"
+  user_name="$(prompt_default "User name")"
+  agent_name="$(prompt_default "Agent name" "Karl")"
+  customer="$(prompt_default "Customer, team, or organization" "$user_name")"
+  owner="$(prompt_default "Responsible person or team" "$user_name")"
+  purpose="$(prompt_default "Agent purpose")"
+  role="$(prompt_default "Agent role or focus" "AI coworker")"
+  country="$(prompt_default "Country")"
+  timezone="$(prompt_default "Timezone" "$timezone")"
+  language="$(prompt_default "Language" "en")"
+  tone="$(prompt_default "Tone" "friendly, precise, practical")"
+  risk_level="$(prompt_default "Risk level" "medium")"
+  boundaries="$(prompt_default "Sensitive boundaries and no-gos" "No external changes without approval")"
+  tools="$(prompt_default "Important tools or systems" "GitHub, Google Workspace, Slack")"
+  channels="$(prompt_default "Preferred channels" "Codex")"
 
+  mkdir -p "$root_dir/docs" "$root_dir/automations/heartbeat"
   render_final_agents
   write_project_yaml
   write_customer_context
@@ -335,10 +310,11 @@ EOF
   write_decisions_doc
   write_memory
   write_manifest
-  create_heartbeat_automation
 
   echo
-  echo "Fertig. Das Projekt wurde initialisiert."
-  echo "Als Nächstes kannst du Skills installieren:"
+  echo "Project initialized."
+  echo
+  echo "Next recommended commands:"
+  echo "  ./scripts/install_tools.sh"
   echo "  ./scripts/install_skills.sh"
 }

@@ -28,4 +28,7 @@ __pycache__/
 # Bootstrap-local skill state
 .bootstrap/skills-cache/
 .bootstrap/skill-installs/*.env
+.bootstrap/tool-installs/*.env
+.bootstrap/tools/*
+!.bootstrap/tools/.gitkeep
 skills/**/.skill-source.env

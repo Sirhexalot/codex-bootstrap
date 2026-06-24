@@ -1,56 +1,51 @@
-# Projekt-Memory
+# Project Memory
 
-Diese Datei ist das projektweite Arbeitsgedächtnis dieser Bootstrap-Vorlage.
+This file is the shared project memory for this bootstrap repository.
 
-## Zweck
+## Purpose
 
-- Bootstrap-Entscheidungen nachvollziehbar halten
-- den aktuellen Stand des Repositories dokumentieren
-- spätere Anpassungen für andere Agenten oder Maintainer erleichtern
+- keep bootstrap decisions traceable
+- document the current repository state
+- make later changes easier for future agents or maintainers
 
-## Aktueller Stand
+## Current State
 
-- Dieses Repository ist eine Bootstrap-Vorlage für Codex-Agenten.
-- Die globale Werkbank wird über `setup-mac.sh` und `setup-windows.ps1` vorbereitet.
-- Bootstrap-Interna liegen unter `.bootstrap/`.
-- Sichtbare Skripte unter `scripts/` delegieren an Bootstrap-Logik.
-- Skills werden aus Original-Repositories installiert.
-- Skill-Installationen unterscheiden zwischen `global` und `projektbezogen`.
-- Nach der Initialisierung wird die sichtbare `AGENTS.md` durch eine projektspezifische Fassung ersetzt.
+- This repository is a bootstrap template for Codex agents.
+- The global workbench is prepared through `setup-mac.sh` and `setup-windows.ps1`.
+- Bootstrap internals live under `.bootstrap/`.
+- Visible scripts under `scripts/` delegate to bootstrap logic.
+- Skills are installed from original repositories.
+- Skill installations distinguish between `global` and `project`.
+- After initialization, the visible `AGENTS.md` is replaced with a project-specific version.
 
-## Stabile Entscheidungen
+## Stable Decisions
 
-- Tools gehören zur globalen Werkbank.
-- Codex wird nicht durch dieses Repository installiert.
-- Skills dürfen global oder projektbezogen installiert werden.
-- Größere projektspezifische Skill-Sammlungen sollen die sichtbare Projektstruktur nicht verschmutzen.
-- Die Standard-Automatisierung `Heartbeat` wird beim Initialisieren angelegt.
+- Tool bundles and skills may be installed in global or workspace mode.
+- Native system tools stay globally preferred; Python and Node runtimes are created locally only where that makes sense.
+- Codex itself is not installed by this repository.
+- Larger project-specific skill collections should not clutter the visible project structure.
+- The default `Heartbeat` automation is created during initialization.
 
-## Offene Punkte
+### 2026-06-24 - Tool catalog and bundled workbench introduced
 
-- Optional später zusätzliche Skill-Quellen in den Katalog aufnehmen
-- Optional später weitere Bootstrap-Skripte wie Validierung oder Upgrade ergänzen
+- Trigger: a request for a cross-platform, centralized workbench with selectable scope for tools and skills.
+- Goal: stop treating tools as a fixed global list and instead manage them as bundles installable in `global` or `workspace` mode.
+- Results:
+  - New tool catalogs under `.bootstrap/lib/tool-catalog.sh` and `.bootstrap/lib/tool-catalog.ps1`.
+  - New visible scripts for tool installation, update, and listing.
+  - Default bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`.
+  - Managed global tool installs are synchronized into `~/.codex/AGENTS.md`.
 
-## Laufprotokoll
+### 2026-06-24 - English output unification and managed skill inventory audit
 
-### 2026-06-19 - Bootstrap auf globale Werkbank und versteckte Interna umgestellt
+- Trigger: a request to make all user-facing output English and clean up managed inventory reporting.
+- Goal: unify project-facing text in English and keep `list_skills` metadata-driven while auditing real target paths.
+- Results:
+  - User-facing project text, templates, and managed AGENTS blocks were switched to English.
+  - `list_skills` now reports `present` or `missing` based on the managed `TARGET_DIR`.
+  - Duplicate metadata files are deduplicated by canonical filename, and stale extras are surfaced in list output.
 
-- Auslöser: Wunsch, das Repository sauber an Freunde weitergeben zu können.
-- Ziel: globale Werkbank, Bootstrap-Interna unter `.bootstrap/`, projektbezogene Übergabe über Onboarding und wählbare Skill-Modi.
-- Ergebnisse:
-  - Root-`AGENTS.md` zum Bootstrap-Einstieg vereinfacht.
-  - Setup-Skripte auf globale Werkbank reduziert.
-  - Skill-Verwaltung auf `global` oder `projektbezogen` mit Metadaten umgestellt.
-  - Initialisierung auf echtes Nutzerinterview und finale `AGENTS.md` ausgerichtet.
-- Nächste Schritte:
-  - Auf macOS und mit Bash/PowerShell per Syntaxcheck und Probelauf prüfen.
+## Open Points
 
-### 2026-06-19 - Remote-Skills aus Git herausgenommen
-
-- Auslöser: Klärung, dass aus Remote-Repositories installierte Skills nicht als lokale Projekt-Änderungen mitgeführt werden sollen.
-- Ziel: Reproduzierbare Skill-Installationen erlauben, ohne das Repository mit Upstream-Kopien zu füllen.
-- Ergebnisse:
-  - Root-`.gitignore` um Regeln für remote-verwaltete Skill-Kopien erweitert.
-  - `skills/README.md` und `scripts/README.md` auf den neuen Workflow angepasst.
-- Nächste Schritte:
-  - Bei Bedarf einzelne wirklich projektspezifische Skills aus Upstream-Sammlungen bewusst als eigene Repo-Dateien übernehmen.
+- Optionally add more skill sources to the catalog later.
+- Optionally add more bootstrap utilities such as validation or upgrade helpers.

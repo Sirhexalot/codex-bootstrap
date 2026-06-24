@@ -1,23 +1,17 @@
-# Entscheidungen
+# Decisions
 
-Diese Datei hält wichtige Entscheidungen des konkreten Agentenprojekts fest.
+This file records important decisions for the concrete agent project.
 
-## Entscheidungsvorlage
+## Bootstrap Decisions
 
-### YYYY-MM-DD - `<Titel>`
+### 2026-06-19 - Workbench split into bundles, tools, and selectable skills
 
-- Entscheidung: `<Was wurde entschieden?>`
-- Grund: `<Warum?>`
-- Alternativen: `<Was wurde verworfen?>`
-- Auswirkungen: `<Was ändert sich dadurch?>`
-- Status: `<aktiv, offen, ersetzt>`
+- Decision: manage tools as bundles and install them, like skills, in `global` or `workspace` mode where that bundle meaningfully supports it.
+- Rationale: keep the workbench reproducible across platforms without duplicating system-level tools unnecessarily.
+- Status: `active`
 
-## Bootstrap-Entscheidungen
+### 2026-06-24 - Global AGENTS synchronization added for managed installs
 
-### 2026-06-19 - Werkbank global, Skills wählbar
-
-- Entscheidung: Tools werden global vorbereitet, Skills dagegen pro Installationslauf als `global` oder `projektbezogen` installiert.
-- Grund: Die Werkbank soll stabil sein, die spätere Projektstruktur aber sauber und flexibel bleiben.
-- Alternativen: Alles global installieren oder alles nur projektlokal verwalten.
-- Auswirkungen: Setup-Skripte und Skill-Skripte haben klar getrennte Rollen.
-- Status: `aktiv`
+- Decision: synchronize managed global tools and skills into `~/.codex/AGENTS.md`, and synchronize managed project entries into `./AGENTS.md`.
+- Rationale: make the actual installed state visible where agents already look for operating context.
+- Status: `active`

@@ -1,16 +1,16 @@
 # Skills
 
-Dieser Ordner ist für direkte, bewusst sichtbare Projektskills gedacht.
+This folder is intended for direct, intentionally visible project skills.
 
-## Regeln
+## Rules
 
-- Echte projektspezifische Skills dürfen hier versioniert liegen.
-- Skills aus Original-Repositories können lokal unter `skills/` installiert werden, gelten aber als reproduzierbare Arbeitskopien.
-- Remote-installierte Skills werden in diesem Bootstrap standardmäßig nicht versioniert.
-- Wenn ein Upstream-Skill wirklich Teil dieses Repositories werden soll, muss er bewusst als eigener Projektskill übernommen werden.
-- Verwaltete Upstream-Quellen werden über `./scripts/install_skills.sh`, `./scripts/update_skills.sh` und `./scripts/list_skills.sh` gesteuert.
+- Real project-specific skills may be versioned here.
+- Skills from original repositories may be installed locally under `skills/`, but they are treated as reproducible working copies.
+- Remote-installed skills are not versioned in this bootstrap by default.
+- If an upstream skill should truly become part of this repository, it must be adopted explicitly as its own project skill.
+- Managed upstream sources are controlled through `./scripts/install_skills.sh`, `./scripts/update_skills.sh`, and `./scripts/list_skills.sh`.
 
-## Typische Inhalte
+## Typical Contents
 
-- einzelne direkte `SKILL.md`-basierte Projektskills
-- vom Nutzer bewusst hochgezogene Skills, die im Projekt sichtbar sein sollen
+- individual direct `SKILL.md`-based project skills
+- skills intentionally pulled into the project because the user wants them visible here

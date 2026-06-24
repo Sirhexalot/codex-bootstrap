@@ -23,21 +23,21 @@ function Invoke-BootstrapProjectInit {
     return Read-Host $Label
   }
 
-  $projectName = Prompt-Default "Projektname" "Kunden-Agent"
-  $userName = Prompt-Default "Name des Nutzers"
-  $agentName = Prompt-Default "Name des Agenten" "Karl"
-  $customer = Prompt-Default "Kunde, Team oder Organisation" $userName
-  $owner = Prompt-Default "Verantwortliche Person oder Team" $userName
-  $purpose = Prompt-Default "Zweck des Agenten"
-  $role = Prompt-Default "Rolle oder Schwerpunkt des Agenten" "AI-Coworker"
-  $country = Prompt-Default "Land"
-  $timezone = Prompt-Default "Zeitzone" (Get-TimeZone).Id
-  $language = Prompt-Default "Sprache" "de"
-  $tone = Prompt-Default "Ton" "freundlich, präzise, pragmatisch"
-  $riskLevel = Prompt-Default "Risikostufe" "medium"
-  $boundaries = Prompt-Default "Sensible Grenzen und No-Gos" "Keine externen Änderungen ohne Freigabe"
-  $tools = Prompt-Default "Wichtige Tools oder Systeme" "GitHub, Google Workspace, Slack"
-  $channels = Prompt-Default "Bevorzugte Kanäle" "Codex"
+  $projectName = Prompt-Default "Project name" "Customer Agent"
+  $userName = Prompt-Default "User name"
+  $agentName = Prompt-Default "Agent name" "Karl"
+  $customer = Prompt-Default "Customer, team, or organization" $userName
+  $owner = Prompt-Default "Responsible person or team" $userName
+  $purpose = Prompt-Default "Agent purpose"
+  $role = Prompt-Default "Agent role or focus" "AI coworker"
+  $country = Prompt-Default "Country"
+  $timezone = Prompt-Default "Timezone" (Get-TimeZone).Id
+  $language = Prompt-Default "Language" "en"
+  $tone = Prompt-Default "Tone" "friendly, precise, practical"
+  $riskLevel = Prompt-Default "Risk level" "medium"
+  $boundaries = Prompt-Default "Sensitive boundaries and no-gos" "No external changes without approval"
+  $tools = Prompt-Default "Important tools or systems" "GitHub, Google Workspace, Slack"
+  $channels = Prompt-Default "Preferred channels" "Codex"
 
   $agents = Get-Content -Path $templatePath -Raw
   $agents = $agents.Replace("__PROJECT_NAME__", $projectName).Replace("__USER_NAME__", $userName).Replace("__AGENT_NAME__", $agentName).Replace("__CUSTOMER__", $customer).Replace("__ROLE__", $role).Replace("__COUNTRY__", $country).Replace("__TIMEZONE__", $timezone).Replace("__LANGUAGE__", $language).Replace("__TONE__", $tone).Replace("__PURPOSE__", $purpose).Replace("__BOUNDARIES__", $boundaries)
@@ -70,9 +70,9 @@ agent:
   primary_users:
     - "$userName"
   out_of_scope:
-    - "Keine externen Aktionen mit Wirkung auf Kunden, Konten, Daten oder Kosten ohne klare Freigabe."
-    - "Keine Zugangsdaten, API-Keys oder Tokens in Projektdateien speichern."
-    - "Keine produktiven Automatisierungen ohne dokumentierten Zweck, Zugriff und Abbruchkriterien aktivieren."
+    - "No external actions affecting customers, accounts, data, or costs without explicit approval."
+    - "Do not store credentials, API keys, or tokens in project files."
+    - "Do not enable production automations without documented purpose, access, and stop criteria."
   boundaries: "$boundaries"
 
 memory:
@@ -88,8 +88,14 @@ folders:
   bootstrap: ".bootstrap"
 
 tools:
-  workstation_scope: "global"
+  tools_scope: "global_or_project"
   skills_scope: "global_or_project"
+  bundles:
+    - "core"
+    - "documents"
+    - "pdf-images"
+    - "diagrams"
+    - "browser-automation"
   required:
     - "Codex"
     - "Python"
@@ -98,114 +104,137 @@ tools:
   optional:
     - "$tools"
 
+onboarding:
+  first_prompt: "Please initialize this project as a customer agent."
+  read_first:
+    - "project.yaml"
+    - "AGENTS.md"
+    - "Memory.md"
+    - "docs/customer-context.md"
+
 heartbeat:
   enabled: true
   name: "Heartbeat"
   schedule: "weekdays hourly from 09:00 to 17:00"
   timezone: "$timezone"
   automation_path: "automations/heartbeat"
-  purpose: "Regelmäßig prüfen, ob Memory, Dokumentation, Entscheidungen und Runbooks gepflegt sind."
+  purpose: "Regularly check whether memory, documentation, decisions, and runbooks are being maintained."
 "@ | Set-Content -Path (Join-Path $rootDir "project.yaml") -Encoding UTF8
 
   New-Item -ItemType Directory -Force -Path (Join-Path $rootDir "docs") | Out-Null
   @"
-# Kundenkontext
+# Customer Context
 
-- Nutzername: ``$userName``
-- Agentenname: ``$agentName``
-- Projektname: ``$projectName``
-- Kunde, Team oder Organisation: ``$customer``
-- Rolle oder Schwerpunkt: ``$role``
-- Land: ``$country``
-- Zeitzone: ``$timezone``
-- Zweck: ``$purpose``
+## User and Project
+
+- User name: ``$userName``
+- Agent name: ``$agentName``
+- Project name: ``$projectName``
+- Customer, team, or organization: ``$customer``
+- Role or focus: ``$role``
+
+## Goal
+
+- Purpose: ``$purpose``
+- Working style: ``The agent works like a reliable coworker, reads context first, delivers concrete results, and asks for approval before external or irreversible steps.``
+- Key outcomes: ``Documentation, decisions, automations, artifacts, and clear next steps.``
+
+## Context
+
+- Country: ``$country``
+- Timezone: ``$timezone``
+- Language: ``$language``
+- Tone: ``$tone``
+
+## Boundaries
+
+- Sensitive areas: ``$boundaries``
+- External or irreversible actions require approval
 "@ | Set-Content -Path (Join-Path $rootDir "docs/customer-context.md") -Encoding UTF8
 
   @"
-# Tools und Zugriffe
+# Tools and Access
 
-- Werkbank-Tools sind global.
-- Wichtige Tools oder Plattformen: ``$tools``
-- Bevorzugte Kanäle: ``$channels``
-- Skills können global oder projektbezogen installiert werden.
+## Workbench Tools
+
+- Python: ``global``
+- Tool bundles: ``core, documents, pdf-images, diagrams, browser-automation``
+- Scope model: ``global or workspace``
+- Native priority: ``system tools first, Python or Node only as targeted supplements``
+- Global Python workbench: ``~/.codex/workbench/python``
+- Global Python entrypoint: ``codex-python``
+- Global extractor entrypoint: ``codex-markitdown``
+
+## Project-Relevant Systems
+
+- Important tools or platforms: ``$tools``
+- Preferred channels: ``$channels``
+
+## Access Rules
+
+- Tools and skills can be installed in global or workspace mode.
+- Installation scripts synchronize managed global tools and skills into ``~/.codex/AGENTS.md`` and managed project entries into ``./AGENTS.md``.
+- Credentials are not stored in project files.
+- External write actions require explicit approval.
 "@ | Set-Content -Path (Join-Path $rootDir "docs/tools-and-access.md") -Encoding UTF8
 
   @"
-# Entscheidungen
+# Decisions
 
-### $(Get-Date -Format "yyyy-MM-dd") - Projekt initialisiert
+## Decisions
 
-- Entscheidung: Dieses Repository wurde in einen konkreten Agenten überführt.
-- Grund: Der Bootstrap soll jetzt als echter Projektrahmen dienen.
-- Auswirkungen: Sichtbare ``AGENTS.md`` ist projektspezifisch, Werkbank-Tools bleiben global und Skills sind wählbar.
-- Status: ``aktiv``
+### $(Get-Date -Format "yyyy-MM-dd") - Project initialized
+
+- Decision: This repository was turned into a concrete agent for ``$userName``.
+- Rationale: The bootstrap should now act as the real project frame for ``$agentName``.
+- Alternatives: Keep the generic bootstrap AGENTS file.
+- Impact: The visible ``AGENTS.md`` is now project-specific, and tool bundles and skills can be chosen in global or workspace mode.
+- Status: ``active``
 "@ | Set-Content -Path (Join-Path $rootDir "docs/decisions.md") -Encoding UTF8
 
   @"
-# Projekt-Memory
+# Project Memory
 
-## Überblick
+## Overview
 
-- Projektname: ``$projectName``
-- Nutzer: ``$userName``
+- Project name: ``$projectName``
+- User: ``$userName``
 - Agent: ``$agentName``
-- Zweck: ``$purpose``
-- Rolle: ``$role``
-- Land: ``$country``
-- Zeitzone: ``$timezone``
+- Purpose: ``$purpose``
+- Role: ``$role``
+- Country: ``$country``
+- Timezone: ``$timezone``
 
-## Stabile Regeln
+## Stable Rules
 
-- Werkbank-Tools sind global.
-- Skills werden per Skript als ``global`` oder ``projektbezogen`` installiert.
-- Externe oder irreversible Aktionen brauchen Freigabe.
+- Tool bundles and skills are installed by script in ``global`` or ``workspace`` mode.
+- External or irreversible actions require approval.
+- Relevant project changes are documented here.
 
-## Laufprotokoll
+## Open Points
 
-### $timestamp - Projekt initialisiert
+- sharpen the first productive use cases
+- connect the relevant tools and channels in concrete terms
 
-- Auslöser: Lokales Bootstrap-Initialisierungsskript
-- Ziel: Aus der Vorlage einen konkreten Agenten machen
-- Ergebnisse:
-  - Finale ``AGENTS.md`` geschrieben
-  - ``project.yaml``, ``docs/`` und ``Memory.md`` angepasst
-  - Heartbeat-Automatisierung angelegt
+## Run Log
+
+### $timestamp - Project initialized
+
+- Trigger: local bootstrap initialization script
+- Goal: turn the template into a concrete agent
+- Results:
+  - wrote the final ``AGENTS.md`` for ``$agentName``
+  - adapted ``project.yaml``, ``docs/``, and ``Memory.md`` to the project context
+  - created or updated the Heartbeat automation
+- Next steps:
+  - define the first concrete tools and channels
+  - install the required tool bundles and skills in global or workspace mode
 "@ | Set-Content -Path (Join-Path $rootDir "Memory.md") -Encoding UTF8
 
-  New-Item -ItemType Directory -Force -Path (Join-Path $rootDir "automations/heartbeat") | Out-Null
-  Copy-Item (Join-Path $rootDir ".bootstrap/templates/automation-template/README.md") (Join-Path $rootDir "automations/heartbeat/README.md") -Force
-  Copy-Item (Join-Path $rootDir ".bootstrap/templates/automation-template/Runbook.md") (Join-Path $rootDir "automations/heartbeat/Runbook.md") -Force
-  @"
-# Heartbeat Memory
-
-### $timestamp - Angelegt
-
-- Auslöser: Projektinitialisierung
-- Ziel: Standard-Heartbeat anlegen
-"@ | Set-Content -Path (Join-Path $rootDir "automations/heartbeat/Memory.md") -Encoding UTF8
-
-  New-Item -ItemType Directory -Force -Path (Join-Path $rootDir ".bootstrap") | Out-Null
-  @"
-{
-  "bootstrap": {
-    "name": "codex-agent-bootstrap",
-    "version": "0.2.0"
-  },
-  "initialized": true,
-  "initializedAt": "$timestamp",
-  "project": {
-    "name": "$projectName",
-    "userName": "$userName",
-    "agentName": "$agentName",
-    "customer": "$customer",
-    "country": "$country",
-    "timezone": "$timezone"
-  }
-}
-"@ | Set-Content -Path (Join-Path $rootDir ".bootstrap/manifest.json") -Encoding UTF8
-
   Write-Host ""
-  Write-Host "Fertig. Das Projekt wurde initialisiert."
-  Write-Host "Als Nächstes kannst du Skills installieren:"
+  Write-Host "Project initialized."
+  Write-Host ""
+  Write-Host "Next recommended commands:"
+  Write-Host "  ./scripts/install_tools.sh"
   Write-Host "  ./scripts/install_skills.sh"
 }

@@ -23,8 +23,8 @@
     ".bootstrap/skills-cache/"
   ],
   "notes": [
-    "Werkbank-Tools sind global.",
-    "Skills werden aus Original-Repositories geholt.",
-    "Die sichtbare AGENTS.md wird nach der Initialisierung projektspezifisch überschrieben."
+    "Workbench tools are global.",
+    "Skills are fetched from original repositories.",
+    "The visible AGENTS.md is replaced with a project-specific version after initialization."
   ]
 }
