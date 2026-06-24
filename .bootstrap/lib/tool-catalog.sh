@@ -414,6 +414,20 @@ install_project_python_documents() {
   ensure_python_wrapper "$python_venv/bin/python" "$PROJECT_BIN_DIR"
 }
 
+install_global_node_documents() {
+  npm install -g mammoth docx xlsx pptxgenjs pdf-parse >/dev/null
+}
+
+install_project_node_documents() {
+  local runtime_root="$PROJECT_TOOLS_DIR/documents"
+
+  mkdir -p "$runtime_root"
+  if [[ ! -f "$runtime_root/package.json" ]]; then
+    npm init -y --prefix "$runtime_root" >/dev/null
+  fi
+  npm install --prefix "$runtime_root" mammoth docx xlsx pptxgenjs pdf-parse >/dev/null
+}
+
 install_project_browser_runtime() {
   local runtime_root="$PROJECT_TOOLS_DIR/browser-automation"
 
@@ -457,11 +471,13 @@ install_documents_bundle() {
     ensure_homebrew
     run_brew install pandoc
     install_global_python_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV" "codex-python,codex-markitdown,pandoc" "brew:pandoc|python:openpyxl,python-docx,python-pptx,markitdown" "Global document workbench for Office generation and Office/PDF extraction."
+    install_global_node_documents
+    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV" "codex-python,codex-markitdown,pandoc" "brew:pandoc|python:openpyxl,python-docx,python-pptx,markitdown|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Global document workbench for Office generation and Office/PDF extraction, including Node document parsers and generators."
     sync_global_agents_file
   else
     install_project_python_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown" "Workspace mode installs the Python document tools locally. Pandoc remains a globally preferred native tool."
+    install_project_node_documents
+    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Workspace mode creates a local document runtime with Python and Node packages. Pandoc remains a globally preferred native tool."
   fi
 }
 
