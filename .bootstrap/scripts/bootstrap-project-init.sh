@@ -47,6 +47,8 @@ bootstrap_init_project() {
     content="${content//__LANGUAGE__/$language}"
     content="${content//__TONE__/$tone}"
     content="${content//__PURPOSE__/$purpose}"
+    content="${content//__TOOLS__/$tools}"
+    content="${content//__CHANNELS__/$channels}"
     content="${content//__BOUNDARIES__/$boundaries}"
     printf '%s\n' "$content" > "$root_dir/AGENTS.md"
   }
@@ -91,8 +93,9 @@ memory:
   update_project_memory_on_relevant_changes: true
 
 folders:
-  automations: "automations"
-  docs: "docs"
+  automations: ".bootstrap/automations"
+  scripts: ".scripts"
+  mcp: ".mcp"
   skills: "skills"
   bootstrap: ".bootstrap"
 
@@ -120,90 +123,30 @@ onboarding:
     - "project.yaml"
     - "AGENTS.md"
     - "Memory.md"
-    - "docs/customer-context.md"
+    - "Decisions.md"
 
 heartbeat:
   enabled: true
   name: "Heartbeat"
   schedule: "weekdays hourly from 09:00 to 17:00"
   timezone: "$timezone"
-  automation_path: "automations/heartbeat"
+  automation_path: ".bootstrap/automations/heartbeat"
   purpose: "Regularly check whether memory, documentation, decisions, and runbooks are being maintained."
 EOF
   }
 
-  write_customer_context() {
-    cat > "$root_dir/docs/customer-context.md" <<EOF
-# Customer Context
-
-## User and Project
-
-- User name: \`$user_name\`
-- Agent name: \`$agent_name\`
-- Project name: \`$project_name\`
-- Customer, team, or organization: \`$customer\`
-- Role or focus: \`$role\`
-
-## Goal
-
-- Purpose: \`$purpose\`
-- Working style: \`The agent works like a reliable coworker, reads context first, delivers concrete results, and asks for approval before external or irreversible steps.\`
-- Key outcomes: \`Documentation, decisions, automations, artifacts, and clear next steps.\`
-
-## Context
-
-- Country: \`$country\`
-- Timezone: \`$timezone\`
-- Language: \`$language\`
-- Tone: \`$tone\`
-
-## Boundaries
-
-- Sensitive areas: \`$boundaries\`
-- External or irreversible actions require approval
-EOF
-  }
-
-  write_tools_doc() {
-    cat > "$root_dir/docs/tools-and-access.md" <<EOF
-# Tools and Access
-
-## Workbench Tools
-
-- Python: \`global\`
-- Tool bundles: \`core, documents, pdf-images, diagrams, browser-automation, composio-cli\`
-- Scope model: \`global or workspace\`
-- Native priority: \`system tools first, Python or Node only as targeted supplements\`
-- Global Python workbench: \`~/.codex/workbench/python\`
-- Global Python entrypoint: \`codex-python\`
-- Global extractor entrypoint: \`codex-markitdown\`
-
-## Project-Relevant Systems
-
-- Important tools or platforms: \`$tools\`
-- Preferred channels: \`$channels\`
-
-## Access Rules
-
-- Tools and skills can be installed in global or workspace mode.
-- Installation scripts synchronize compact managed global references into \`~/.codex/AGENTS.md\` and managed project entries into \`./AGENTS.md\`.
-- Credentials are not stored in project files.
-- External write actions require explicit approval.
-EOF
-  }
-
   write_decisions_doc() {
-    cat > "$root_dir/docs/decisions.md" <<EOF
+    cat > "$root_dir/Decisions.md" <<EOF
 # Decisions
 
-## Decisions
+This file records important decisions for the concrete agent project.
 
 ### $(date +%F) - Project initialized
 
 - Decision: This repository was turned into a concrete agent for \`$user_name\`.
 - Rationale: The bootstrap should now act as the real project frame for \`$agent_name\`.
 - Alternatives: Keep the generic bootstrap AGENTS file.
-- Impact: The visible \`AGENTS.md\` is now project-specific, and tool bundles and skills can be chosen in global or workspace mode.
+- Impact: The visible \`AGENTS.md\` is now project-specific, customer context lives there directly, and operations run through \`.scripts/\` and \`.bootstrap/automations/\`.
 - Status: \`active\`
 EOF
   }
@@ -224,7 +167,7 @@ EOF
 
 ## Stable Rules
 
-- Tool bundles and skills are installed by script in \`global\` or \`workspace\` mode.
+- Tool bundles, skills, and MCP servers are installed by script in \`global\` or \`workspace\` mode.
 - External or irreversible actions require approval.
 - Relevant project changes are documented here.
 
@@ -241,11 +184,11 @@ EOF
 - Goal: turn the template into a concrete agent
 - Results:
   - wrote the final \`AGENTS.md\` for \`$agent_name\`
-  - adapted \`project.yaml\`, \`docs/\`, and \`Memory.md\` to the project context
+  - adapted \`project.yaml\`, \`AGENTS.md\`, \`Decisions.md\`, and \`Memory.md\` to the project context
   - created or updated the Heartbeat automation
 - Next steps:
   - define the first concrete tools and channels
-  - install the required tool bundles and skills in global or workspace mode
+  - install the required tool bundles, skills, and MCP servers in global or workspace mode
 EOF
   }
 
@@ -260,25 +203,45 @@ EOF
   "initialized": true,
   "initializedAt": "$timestamp",
   "entrypoints": [
-    "setup-mac.sh",
-    "setup-windows.ps1",
-    "scripts/init-project.sh",
-    "scripts/init-project.ps1",
-    "scripts/install_skills.sh",
-    "scripts/update_skill.sh",
-    "scripts/update_skills.sh",
-    "scripts/list_skills.sh"
+    ".scripts/setup-mac.sh",
+    ".scripts/setup-windows.ps1",
+    ".scripts/init-project.sh",
+    ".scripts/init-project.ps1",
+    ".scripts/install_tools.sh",
+    ".scripts/install_tools.ps1",
+    ".scripts/update_tools.sh",
+    ".scripts/update_tools.ps1",
+    ".scripts/list_tools.sh",
+    ".scripts/list_tools.ps1",
+    ".scripts/install_skills.sh",
+    ".scripts/install_skills.ps1",
+    ".scripts/update_skill.sh",
+    ".scripts/update_skill.ps1",
+    ".scripts/update_skills.sh",
+    ".scripts/update_skills.ps1",
+    ".scripts/list_skills.sh",
+    ".scripts/list_skills.ps1",
+    ".scripts/install_mcp.sh",
+    ".scripts/install_mcp.ps1",
+    ".scripts/update_mcp.sh",
+    ".scripts/update_mcp.ps1",
+    ".scripts/update_mcps.sh",
+    ".scripts/update_mcps.ps1",
+    ".scripts/list_mcps.sh",
+    ".scripts/list_mcps.ps1"
   ],
   "managedAreas": [
     ".bootstrap/templates/",
     ".bootstrap/scripts/",
     ".bootstrap/lib/",
     ".bootstrap/skill-installs/",
+    ".bootstrap/mcp-installs/",
     ".bootstrap/skills-cache/"
   ],
   "notes": [
     "Workbench tools are global.",
     "Skills are fetched from original repositories.",
+    "MCP servers can be installed globally or per project.",
     "The visible AGENTS.md is replaced with a project-specific version after initialization."
   ]
 }
@@ -303,11 +266,9 @@ EOF
   tools="$(prompt_default "Important tools or systems" "GitHub, Google Workspace, Slack")"
   channels="$(prompt_default "Preferred channels" "Codex")"
 
-  mkdir -p "$root_dir/docs" "$root_dir/automations/heartbeat"
+  mkdir -p "$root_dir/.bootstrap/automations/heartbeat" "$root_dir/.mcp"
   render_final_agents
   write_project_yaml
-  write_customer_context
-  write_tools_doc
   write_decisions_doc
   write_memory
   write_manifest
@@ -316,6 +277,7 @@ EOF
   echo "Project initialized."
   echo
   echo "Next recommended commands:"
-  echo "  ./scripts/install_tools.sh"
-  echo "  ./scripts/install_skills.sh"
+  echo "  ./.scripts/install_tools.sh"
+  echo "  ./.scripts/install_skills.sh"
+  echo "  ./.scripts/install_mcp.sh"
 }

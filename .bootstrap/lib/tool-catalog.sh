@@ -24,18 +24,18 @@ SUPPORTED_TOOL_BUNDLES=(
 usage_install_tools() {
   cat <<'EOF'
 Usage:
-  ./scripts/install_tools.sh all
-  ./scripts/install_tools.sh core documents composio-cli
-  ./scripts/install_tools.sh --mode global all
-  ./scripts/install_tools.sh --mode project documents browser-automation
+  ./.scripts/install_tools.sh all
+  ./.scripts/install_tools.sh core documents composio-cli
+  ./.scripts/install_tools.sh --mode global all
+  ./.scripts/install_tools.sh --mode project documents browser-automation
 EOF
 }
 
 usage_update_tools() {
   cat <<'EOF'
 Usage:
-  ./scripts/update_tools.sh all
-  ./scripts/update_tools.sh core documents composio-cli
+  ./.scripts/update_tools.sh all
+  ./.scripts/update_tools.sh core documents composio-cli
 EOF
 }
 
@@ -290,7 +290,7 @@ sync_global_agents_file() {
   bundle_lines+=("- Recorded global tool bundles: \`$bundle_count\`.")
   bundle_lines+=("- Metadata directory: \`$PROJECT_STATE_DIR\`.")
   bundle_lines+=("- Global workbench root: \`$GLOBAL_TOOL_ROOT\`.")
-  bundle_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./scripts/list_tools.sh\`.")
+  bundle_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./.scripts/list_tools.sh\`.")
 
   sync_agents_block \
     "$GLOBAL_AGENTS_FILE" \
@@ -460,6 +460,29 @@ EOF
   chmod +x "$PROJECT_BIN_DIR/codex-playwright"
 }
 
+install_tesseract_language_data() {
+  local tessdata_dir
+  local lang
+  local source_url
+  local temp_file
+
+  tessdata_dir="$(brew --prefix)/share/tessdata"
+  mkdir -p "$tessdata_dir"
+
+  for lang in deu fra; do
+    if [[ -f "$tessdata_dir/$lang.traineddata" ]]; then
+      chmod 0644 "$tessdata_dir/$lang.traineddata"
+      continue
+    fi
+
+    source_url="https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/4.1.0/$lang.traineddata"
+    temp_file="$(mktemp "${TMPDIR:-/tmp}/codex-tessdata-$lang.XXXXXX")"
+    curl -fsSL "$source_url" -o "$temp_file"
+    chmod 0644 "$temp_file"
+    mv "$temp_file" "$tessdata_dir/$lang.traineddata"
+  done
+}
+
 install_core_bundle() {
   local mode="$1"
 
@@ -503,8 +526,9 @@ install_pdf_images_bundle() {
   fi
 
   ensure_homebrew
-  run_brew install ffmpeg imagemagick ghostscript
-  write_tool_metadata "pdf-images" "$mode" "global_only" "/opt/homebrew|/usr/local" "ffmpeg,magick,gs" "brew:ffmpeg,imagemagick,ghostscript" "Native tools for rendering, conversion, and technical PDF/image work."
+  run_brew install ffmpeg imagemagick ghostscript tesseract
+  install_tesseract_language_data
+  write_tool_metadata "pdf-images" "$mode" "global_only" "/opt/homebrew|/usr/local" "ffmpeg,magick,gs,tesseract" "brew:ffmpeg,imagemagick,ghostscript,tesseract|tessdata_fast:deu,fra" "Native tools for rendering, conversion, technical PDF/image work, and OCR. Tesseract includes English by default; German and French are installed as targeted tessdata_fast language files."
 }
 
 install_diagrams_bundle() {

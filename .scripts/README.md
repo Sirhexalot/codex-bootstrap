@@ -1,9 +1,11 @@
 # Scripts
 
-These visible scripts are user-facing commands. The real bootstrap logic lives under `.bootstrap/`.
+These visible commands live under `.scripts/`. The real bootstrap logic lives under `.bootstrap/`.
 
 ## Available Scripts
 
+- `setup-mac.sh`: prepares the global workbench on macOS
+- `setup-windows.ps1`: prepares the global workbench on Windows
 - `init-project.sh`: visible entry point for project initialization on macOS/Linux
 - `init-project.ps1`: visible entry point for project initialization on Windows
 - `install_tools.sh`: installs tool bundles and asks for `global` or `workspace`
@@ -20,6 +22,14 @@ These visible scripts are user-facing commands. The real bootstrap logic lives u
 - `update_skills.ps1`: Windows entry point for the same update logic
 - `list_skills.sh`: shows the managed skill inventory for this bootstrap
 - `list_skills.ps1`: Windows entry point for the same listing logic
+- `install_mcp.sh`: installs managed MCP servers and can open an interactive multi-select
+- `install_mcp.ps1`: Windows entry point for the same MCP-install logic
+- `update_mcp.sh`: updates already installed MCP servers
+- `update_mcp.ps1`: Windows entry point for the same single-command update logic
+- `update_mcps.sh`: alias for the same MCP update logic
+- `update_mcps.ps1`: Windows entry point for the same update logic
+- `list_mcps.sh`: shows the managed MCP inventory for this bootstrap
+- `list_mcps.ps1`: Windows entry point for the same listing logic
 
 ## Currently Supported Tool Bundles
 
@@ -36,6 +46,7 @@ These visible scripts are user-facing commands. The real bootstrap logic lives u
 - `marketingskills`
 - `frontend-design`
 - `humanizer`
+- `markitdown`
 - `ui-ux-pro-max`
 - `drawio-diagrams-enhanced`
 - `svg-precision`
@@ -46,10 +57,15 @@ These visible scripts are user-facing commands. The real bootstrap logic lives u
 - `jira-expert`
 - `confluence`
 
+## Currently Supported MCP Sources
+
+- `imap`
+
 ## Principles
 
 - tool bundles and skills deliberately choose either `global` or `workspace`
 - native system tools stay globally preferred; document-heavy Python or Node runtimes can be created locally when a bundle needs them
+- the `pdf-images` bundle includes Tesseract OCR with English by default and targeted German/French `tessdata_fast` language files
 - the `documents` bundle provisions both Python document libraries and Node packages like `mammoth`, `docx`, `xlsx`, `pptxgenjs`, and `pdf-parse`
 - project collections are stored under `.bootstrap/skills-cache/` so the visible structure stays clean
 - internal bootstrap scripts intentionally use different names than the visible entry points, which makes the user surface easier to distinguish from the implementation

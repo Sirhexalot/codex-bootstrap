@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot ".bootstrap\lib\tool-catalog.ps1")
+. (Join-Path $PSScriptRoot "..\.bootstrap\lib\tool-catalog.ps1")
 
 Write-Host "Setting up the global Codex workbench on Windows."
 Write-Host "This script installs shared tooling only."

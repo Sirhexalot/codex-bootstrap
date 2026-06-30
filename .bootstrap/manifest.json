@@ -6,25 +6,45 @@
   "initialized": false,
   "initializedAt": null,
   "entrypoints": [
-    "setup-mac.sh",
-    "setup-windows.ps1",
-    "scripts/init-project.sh",
-    "scripts/init-project.ps1",
-    "scripts/install_skills.sh",
-    "scripts/update_skill.sh",
-    "scripts/update_skills.sh",
-    "scripts/list_skills.sh"
+    ".scripts/setup-mac.sh",
+    ".scripts/setup-windows.ps1",
+    ".scripts/init-project.sh",
+    ".scripts/init-project.ps1",
+    ".scripts/install_tools.sh",
+    ".scripts/install_tools.ps1",
+    ".scripts/update_tools.sh",
+    ".scripts/update_tools.ps1",
+    ".scripts/list_tools.sh",
+    ".scripts/list_tools.ps1",
+    ".scripts/install_skills.sh",
+    ".scripts/install_skills.ps1",
+    ".scripts/update_skill.sh",
+    ".scripts/update_skill.ps1",
+    ".scripts/update_skills.sh",
+    ".scripts/update_skills.ps1",
+    ".scripts/list_skills.sh",
+    ".scripts/list_skills.ps1",
+    ".scripts/install_mcp.sh",
+    ".scripts/install_mcp.ps1",
+    ".scripts/update_mcp.sh",
+    ".scripts/update_mcp.ps1",
+    ".scripts/update_mcps.sh",
+    ".scripts/update_mcps.ps1",
+    ".scripts/list_mcps.sh",
+    ".scripts/list_mcps.ps1"
   ],
   "managedAreas": [
     ".bootstrap/templates/",
     ".bootstrap/scripts/",
     ".bootstrap/lib/",
     ".bootstrap/skill-installs/",
+    ".bootstrap/mcp-installs/",
     ".bootstrap/skills-cache/"
   ],
   "notes": [
     "Workbench tools are global.",
     "Skills are fetched from original repositories.",
+    "MCP servers can be installed globally or per project.",
     "The visible AGENTS.md is replaced with a project-specific version after initialization."
   ]
 }

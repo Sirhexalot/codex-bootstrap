@@ -232,7 +232,7 @@ function Sync-GlobalAgentsFile {
   $bundleLines += "- Recorded global tool bundles: ``$bundleCount``."
   $bundleLines += "- Metadata directory: ``$script:ProjectStateDir``."
   $bundleLines += "- Global workbench root: ``$script:GlobalToolRoot``."
-  $bundleLines += "- Inspect the current inventory from ``$script:ProjectRoot`` with ``./scripts/list_tools.sh``."
+  $bundleLines += "- Inspect the current inventory from ``$script:ProjectRoot`` with ``./.scripts/list_tools.sh``."
 
   Sync-AgentsBlock -Path $script:GlobalAgentsFile -StartMarker "<!-- CODEX_GLOBAL_TOOL_BUNDLES_START -->" -EndMarker "<!-- CODEX_GLOBAL_TOOL_BUNDLES_END -->" -Heading "Managed Global Tool Bundles" -Lines $bundleLines
 }
@@ -324,6 +324,43 @@ function Install-ComposioCliGlobal {
   npm install -g @composio/cli
 }
 
+function Get-TesseractDataDir {
+  $candidates = @(
+    (Join-Path $env:ProgramFiles "Tesseract-OCR\tessdata"),
+    (Join-Path ${env:ProgramFiles(x86)} "Tesseract-OCR\tessdata"),
+    (Join-Path $env:LOCALAPPDATA "Programs\Tesseract-OCR\tessdata")
+  ) | Where-Object { $_ -and (Test-Path $_) }
+
+  if ($candidates.Count -gt 0) {
+    return $candidates[0]
+  }
+
+  $command = Get-Command tesseract -ErrorAction SilentlyContinue
+  if ($command) {
+    $candidate = Join-Path (Split-Path -Parent $command.Source) "tessdata"
+    if (Test-Path $candidate) {
+      return $candidate
+    }
+  }
+
+  throw "Could not find Tesseract tessdata directory."
+}
+
+function Install-TesseractLanguageData {
+  $tessdataDir = Get-TesseractDataDir
+  New-Item -ItemType Directory -Force -Path $tessdataDir | Out-Null
+
+  foreach ($lang in @("deu", "fra")) {
+    $targetPath = Join-Path $tessdataDir "$lang.traineddata"
+    if (Test-Path $targetPath) {
+      continue
+    }
+
+    $sourceUrl = "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/4.1.0/$lang.traineddata"
+    Invoke-WebRequest -Uri $sourceUrl -OutFile $targetPath
+  }
+}
+
 function Install-ToolBundle {
   param(
     [string]$Name,
@@ -360,7 +397,9 @@ function Install-ToolBundle {
       winget install --id "Gyan.FFmpeg" --exact --source winget --accept-package-agreements --accept-source-agreements
       winget install --id "ImageMagick.ImageMagick" --exact --source winget --accept-package-agreements --accept-source-agreements
       winget install --id "ArtifexSoftware.GhostScript" --exact --source winget --accept-package-agreements --accept-source-agreements
-      Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_only" -TargetDir "$env:ProgramFiles" -Commands "ffmpeg,magick,gswin64c" -Packages "winget:ffmpeg,imagemagick,ghostscript" -Notes "Native tools for rendering, conversion, and technical PDF/image work."
+      winget install --id "UB-Mannheim.TesseractOCR" --exact --source winget --accept-package-agreements --accept-source-agreements
+      Install-TesseractLanguageData
+      Write-ToolMetadata -Name $Name -Mode $Mode -ScopeSupport "global_only" -TargetDir "$env:ProgramFiles" -Commands "ffmpeg,magick,gswin64c,tesseract" -Packages "winget:ffmpeg,imagemagick,ghostscript,tesseract|tessdata_fast:deu,fra" -Notes "Native tools for rendering, conversion, technical PDF/image work, and OCR. Tesseract includes English by default; German and French are installed as targeted tessdata_fast language files."
     }
     "diagrams" {
       if ($Mode -eq "project") { throw "Bundle 'diagrams' supports global mode only." }

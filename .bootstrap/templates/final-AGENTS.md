@@ -6,21 +6,23 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 
 - User: `__USER_NAME__`
 - Agent: `__AGENT_NAME__`
-- Customer, team, or organization: `__CUSTOMER__`
-- Role or focus: `__ROLE__`
 - Country: `__COUNTRY__`
 - Timezone: `__TIMEZONE__`
 - Language: `__LANGUAGE__`
 - Tone: `__TONE__`
 
-## Purpose
+## Customer Context
 
-`__PURPOSE__`
+- Customer, team, or organization: `__CUSTOMER__`
+- Role or focus: `__ROLE__`
+- Purpose: `__PURPOSE__`
+- Project-specific tools or systems: `__TOOLS__`
+- Preferred channels: `__CHANNELS__`
 
 ## Working Style
 
 - Work like a reliable coworker.
-- Read `project.yaml`, `Memory.md`, relevant files under `docs/`, and existing automations first.
+- Read `project.yaml`, `Memory.md`, `Decisions.md`, and existing files under `.bootstrap/automations/` first.
 - Use existing conventions before introducing new patterns.
 - Document important decisions, open questions, and next steps.
 - External or irreversible actions require approval first.
@@ -34,13 +36,21 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 ## Skills and Workbench
 
 - Workbench tools are global and are not installed into the project itself.
+- Global workbench details live in `~/.codex/AGENTS.md`.
+- This file should only carry project-specific systems, channels, and working context.
 - Skills can be installed globally or per project.
+- MCP servers can be installed globally or per project.
 - Installation scripts synchronize compact managed global references into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
 - Use the following commands for skill management:
-  - `./scripts/install_skills.sh`
-  - `./scripts/update_skill.sh`
-  - `./scripts/update_skills.sh`
-  - `./scripts/list_skills.sh`
+  - `./.scripts/install_skills.sh`
+  - `./.scripts/update_skill.sh`
+  - `./.scripts/update_skills.sh`
+  - `./.scripts/list_skills.sh`
+- Use the following commands for MCP management:
+  - `./.scripts/install_mcp.sh`
+  - `./.scripts/update_mcp.sh`
+  - `./.scripts/update_mcps.sh`
+  - `./.scripts/list_mcps.sh`
 
 <!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
 ## Managed Project Tool Bundles
@@ -54,7 +64,14 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 - none
 <!-- CODEX_PROJECT_SKILLS_END -->
 
+<!-- CODEX_PROJECT_MCPS_START -->
+## Managed Project MCP Servers
+
+- none
+<!-- CODEX_PROJECT_MCPS_END -->
+
 ## Memory Rule
 
 - Record relevant project changes in `Memory.md`.
-- Always log automation runs in the respective automation `Memory.md`.
+- Record project-level decisions in `Decisions.md`.
+- Always log automation runs in the respective automation `Memory.md` under `.bootstrap/automations/`.

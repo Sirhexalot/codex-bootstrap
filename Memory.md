@@ -11,9 +11,12 @@ This file is the shared project memory for this bootstrap repository.
 ## Current State
 
 - This repository is a bootstrap template for Codex agents.
-- The global workbench is prepared through `setup-mac.sh` and `setup-windows.ps1`.
+- The global workbench is prepared through `.scripts/setup-mac.sh` and `.scripts/setup-windows.ps1`.
 - Bootstrap internals live under `.bootstrap/`.
-- Visible scripts under `scripts/` delegate to bootstrap logic.
+- Visible commands under `.scripts/` delegate to bootstrap logic.
+- Root project documentation is intentionally reduced to `AGENTS.md`, `Memory.md`, and `Decisions.md`.
+- Project automations live under `.bootstrap/automations/`.
+- Project-local MCP servers live under `.mcp/`, with install metadata under `.bootstrap/mcp-installs/`.
 - Skills are installed from original repositories.
 - Skill installations distinguish between `global` and `project`.
 - After initialization, the visible `AGENTS.md` is replaced with a project-specific version.
@@ -53,6 +56,52 @@ This file is the shared project memory for this bootstrap repository.
   - `.bootstrap/lib/tool-catalog.ps1` now installs `mammoth`, `docx`, `xlsx`, `pptxgenjs`, and `pdf-parse` for global and project document bundle installs.
   - `.bootstrap/lib/tool-catalog.sh` mirrors the same behavior for macOS/Linux.
   - Bundle metadata and user-facing docs were updated to describe the expanded `documents` runtime.
+
+### 2026-06-25 - Spillwave JIRA skill added to the managed catalog
+
+- Trigger: a request to include `SpillwaveSolutions/jira` and install it globally.
+- Goal: make the upstream JIRA skill available through the bootstrap's managed skill installer instead of requiring a manual install.
+- Results:
+  - `.bootstrap/lib/skill-catalog.sh` now supports a managed skill entry named `jira`.
+  - `.scripts/README.md` now lists `jira` among the supported skill sources.
+  - The global install metadata and `~/.codex/AGENTS.md` will be kept in sync through the normal installer flow.
+
+### 2026-06-25 - Spillwave JIRA skill removed after comparison
+
+- Trigger: a request to compare the two installed JIRA-related skills and keep the stronger one.
+- Goal: avoid redundant JIRA skills and keep `jira-expert` as the single managed JIRA-oriented skill.
+- Results:
+  - The temporary managed `jira` catalog entry was removed from `.bootstrap/lib/skill-catalog.sh`.
+  - The global install at `~/.codex/skills/jira` and its managed metadata were removed.
+  - The managed global skills block in `~/.codex/AGENTS.md` was resynchronized.
+
+### 2026-06-25 - MarkItDown skill promoted into managed bootstrap catalog
+
+- Trigger: a request to keep the `markitdown` skill from SkillzWave, but manage it through the bootstrap instead of only through `skilz`.
+- Goal: let the bootstrap own installation metadata, updates, and AGENTS synchronization for the selected MarkItDown skill.
+- Results:
+  - `.bootstrap/lib/skill-catalog.sh` now supports a managed `markitdown` skill sourced from `jimmc414/Kosmos`.
+  - `.scripts/README.md` now lists `markitdown` among the supported skill sources.
+  - Existing global installs at `~/.codex/skills/markitdown` can now be adopted into managed bootstrap metadata.
+
+### 2026-06-30 - Root-only project docs and hidden operational folders
+
+- Trigger: a request to remove redundant project docs and keep only the essential root files.
+- Goal: consolidate customer context into `AGENTS.md`, move project decisions to `Decisions.md`, hide user-facing commands in `.scripts/`, and move project automations under `.bootstrap/automations/`.
+- Results:
+  - `docs/` was retired from the active project structure.
+  - Root project docs are now `AGENTS.md`, `Memory.md`, and `Decisions.md`.
+  - Visible entry points now live in `.scripts/`, including the setup scripts.
+  - Project automations now live in `.bootstrap/automations/`.
+
+### 2026-06-30 - MCP management added as a third install surface
+
+- Trigger: a request to manage MCP servers alongside tools and skills, with global or project scope.
+- Goal: add a dedicated install path for MCP servers, with project-local files under `.mcp/` and bootstrap metadata under `.bootstrap/mcp-installs/`.
+- Results:
+  - New scripts were added for `install_mcp`, `update_mcp`, and `list_mcps`.
+  - MCP metadata now synchronizes into managed AGENTS blocks like tools and skills.
+  - The first supported MCP source is `imap`, using upstream `npx` wrappers rather than a root `package.json`.
 
 ## Open Points
 

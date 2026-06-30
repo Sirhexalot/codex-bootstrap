@@ -16,6 +16,7 @@ SUPPORTED_SKILLS=(
   "marketingskills"
   "frontend-design"
   "humanizer"
+  "markitdown"
   "ui-ux-pro-max"
   "drawio-diagrams-enhanced"
   "svg-precision"
@@ -102,21 +103,21 @@ list_supported_skills() {
 usage_install() {
   cat <<'EOF'
 Usage:
-  ./scripts/install_skills.sh global all
-  ./scripts/install_skills.sh workspace drawio-diagrams-enhanced
-  ./scripts/install_skills.sh all
-  ./scripts/install_skills.sh frontend-design humanizer
-  ./scripts/install_skills.sh ui-ux-pro-max pptx jira-expert
-  ./scripts/install_skills.sh --mode global all
+  ./.scripts/install_skills.sh global all
+  ./.scripts/install_skills.sh workspace drawio-diagrams-enhanced
+  ./.scripts/install_skills.sh all
+  ./.scripts/install_skills.sh frontend-design humanizer markitdown
+  ./.scripts/install_skills.sh ui-ux-pro-max pptx jira-expert markitdown
+  ./.scripts/install_skills.sh --mode global all
 EOF
 }
 
 usage_update() {
   cat <<'EOF'
 Usage:
-  ./scripts/update_skill.sh all
-  ./scripts/update_skill.sh financial-services
-  ./scripts/update_skill.sh ui-ux-pro-max pptx jira-expert
+  ./.scripts/update_skill.sh all
+  ./.scripts/update_skill.sh financial-services
+  ./.scripts/update_skill.sh ui-ux-pro-max pptx jira-expert markitdown
 EOF
 }
 
@@ -314,7 +315,7 @@ sync_global_agents_file() {
   skill_lines+=("- Recorded global skills: \`$skill_count\`.")
   skill_lines+=("- Metadata directory: \`$PROJECT_STATE_DIR\`.")
   skill_lines+=("- Global skills root: \`$GLOBAL_SKILLS_DIR\`.")
-  skill_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./scripts/list_skills.sh\`.")
+  skill_lines+=("- Inspect the current inventory from \`$PROJECT_ROOT\` with \`./.scripts/list_skills.sh\`.")
 
   sync_agents_block \
     "$GLOBAL_AGENTS_FILE" \
@@ -497,6 +498,12 @@ install_humanizer() {
   with_temp_repo "$repo_url" "" copy_repo
 }
 
+install_markitdown() {
+  local mode="$1"
+  local repo_url="https://github.com/jimmc414/Kosmos.git"
+  install_repo_subdir "markitdown" "$mode" "skill" "$repo_url" "kosmos-claude-scientific-skills/scientific-skills/markitdown" "kosmos-claude-scientific-skills/scientific-skills/markitdown"
+}
+
 install_marketingskills() {
   local mode="$1"
   local repo_url="https://github.com/coreyhaines31/marketingskills.git"
@@ -587,6 +594,7 @@ install_skill_by_name() {
     marketingskills) install_marketingskills "$mode" ;;
     frontend-design) install_frontend_design "$mode" ;;
     humanizer) install_humanizer "$mode" ;;
+    markitdown) install_markitdown "$mode" ;;
     ui-ux-pro-max) install_ui_ux_pro_max "$mode" ;;
     drawio-diagrams-enhanced) install_drawio_diagrams_enhanced "$mode" ;;
     svg-precision) install_svg_precision "$mode" ;;
