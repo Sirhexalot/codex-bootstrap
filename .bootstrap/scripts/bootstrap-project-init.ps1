@@ -135,7 +135,7 @@ This file records important decisions for the concrete agent project.
 - Decision: This repository was turned into a concrete agent for ``$userName``.
 - Rationale: The bootstrap should now act as the real project frame for ``$agentName``.
 - Alternatives: Keep the generic bootstrap AGENTS file.
-- Impact: The visible ``AGENTS.md`` is now project-specific, customer context lives there directly, and operations run through ``.scripts/`` and ``.bootstrap/automations/``.
+- Impact: The visible ``AGENTS.md`` is now project-specific, customer context lives there directly, and operations run through ``.scripts/``, ``.mcp/``, and ``.bootstrap/automations/``.
 - Status: ``active``
 "@ | Set-Content -Path (Join-Path $rootDir "Decisions.md") -Encoding UTF8
 
@@ -154,7 +154,7 @@ This file records important decisions for the concrete agent project.
 
 ## Stable Rules
 
-- Tool bundles, skills, and MCP servers are installed by script in ``global`` or ``workspace`` mode.
+- Tool bundles, skills, and MCP servers are installed by script in ``global`` or ``project`` mode.
 - External or irreversible actions require approval.
 - Relevant project changes are documented here.
 
@@ -175,7 +175,7 @@ This file records important decisions for the concrete agent project.
   - created or updated the Heartbeat automation
 - Next steps:
   - define the first concrete tools and channels
-  - install the required tool bundles, skills, and MCP servers in global or workspace mode
+  - install the required tool bundles, skills, and MCP servers in global or project mode
 "@ | Set-Content -Path (Join-Path $rootDir "Memory.md") -Encoding UTF8
 
   New-Item -ItemType Directory -Force -Path (Join-Path $rootDir ".bootstrap"), (Join-Path $rootDir ".mcp"), (Join-Path $rootDir ".bootstrap/automations/heartbeat") | Out-Null

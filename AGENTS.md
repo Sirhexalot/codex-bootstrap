@@ -42,11 +42,11 @@ Only project-specific systems, channels, and access rules belong in this project
 
 ## Install Rule
 
-- Tools, skills, and MCP servers can be installed globally or in workspace mode.
+- Tools, skills, and MCP servers can be installed globally or in project mode.
 - Tool bundles should prefer native installation; Python or Node should only fill real gaps.
 - Skills always come from original repositories.
 - MCP installs should keep runtime wrappers and metadata reproducible.
-- Tool, skill, and MCP installs must choose between `global` and `workspace`.
+- Tool, skill, and MCP installs must choose between `global` and `project`.
 
 ## Important Scripts
 
@@ -87,12 +87,11 @@ Only project-specific systems, channels, and access rules belong in this project
 ## Managed Project Tool Bundles
 
 - `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown` | Packages `python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse`
-  Note: Workspace mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
+  Note: Project mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
 <!-- CODEX_PROJECT_TOOL_BUNDLES_END -->
-
 
 <!-- CODEX_PROJECT_MCPS_START -->
 ## Managed Project MCP Servers
 
-
+- none
 <!-- CODEX_PROJECT_MCPS_END -->

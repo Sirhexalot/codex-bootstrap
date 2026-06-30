@@ -11,10 +11,10 @@ The design is intentionally two-step:
 
 - a fast path to a usable new agent
 - global workbench tooling for macOS and Windows
-- tool bundles installable in global or workspace mode
-- MCP servers installable in global or workspace mode
+- tool bundles installable in global or project mode
+- MCP servers installable in global or project mode
 - structured onboarding for the real agent
-- skills installable and updateable from original repositories
+- skills installable and updatable from original repositories
 - a clean future project structure, with bootstrap internals living under `.bootstrap/`
 
 ## Quick Start
@@ -55,10 +55,10 @@ The agent should then:
 
 ### 3. Install Tool Bundles Intentionally
 
-The tool scripts ask for a target mode:
+The tool scripts use a target mode:
 
 - `global`
-- `workspace`
+- `project`
 
 Available commands:
 
@@ -66,6 +66,34 @@ Available commands:
 ./.scripts/install_tools.sh
 ./.scripts/update_tools.sh
 ./.scripts/list_tools.sh
+```
+
+Windows:
+
+```powershell
+.\.scripts\install_tools.ps1
+.\.scripts\update_tools.ps1
+.\.scripts\list_tools.ps1
+```
+
+Accepted mode forms are now the same for tools and skills on both platforms:
+
+- `global ...`
+- `project ...`
+- `--mode global ...`
+- `--mode project ...`
+- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
+
+Examples:
+
+```bash
+./.scripts/install_tools.sh global all
+./.scripts/install_tools.sh project documents browser-automation
+```
+
+```powershell
+.\.scripts\install_tools.ps1 -Mode global all
+.\.scripts\install_tools.ps1 project documents browser-automation
 ```
 
 Default bundles:
@@ -79,10 +107,10 @@ Default bundles:
 
 ### 4. Install Skills Intentionally
 
-The skill scripts also ask for a target mode:
+The skill scripts also use a target mode:
 
 - `global`
-- `workspace`
+- `project`
 
 Available commands:
 
@@ -98,6 +126,26 @@ Windows:
 .\.scripts\install_skills.ps1
 .\.scripts\update_skills.ps1
 .\.scripts\list_skills.ps1
+```
+
+Accepted mode forms are the same as for tools:
+
+- `global ...`
+- `project ...`
+- `--mode global ...`
+- `--mode project ...`
+- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
+
+Examples:
+
+```bash
+./.scripts/install_skills.sh global all
+./.scripts/install_skills.sh project drawio-diagrams-enhanced
+```
+
+```powershell
+.\.scripts\install_skills.ps1 -Mode global all
+.\.scripts\install_skills.ps1 project drawio-diagrams-enhanced
 ```
 
 ### 5. Install MCP Servers Intentionally
@@ -160,8 +208,11 @@ Contains templates, metadata, tool, skill, and MCP catalogs, helper logic for in
 - `.scripts/init-project.sh`
 - `.scripts/init-project.ps1`
 - `.scripts/install_tools.sh`
+- `.scripts/install_tools.ps1`
 - `.scripts/update_tools.sh`
+- `.scripts/update_tools.ps1`
 - `.scripts/list_tools.sh`
+- `.scripts/list_tools.ps1`
 - `.scripts/install_skills.sh`
 - `.scripts/install_skills.ps1`
 - `.scripts/update_skill.sh`
@@ -184,18 +235,18 @@ These are thin entry points. The real logic lives under `.bootstrap/`.
 Shortcut summary:
 
 - `.scripts/setup-*` prepares the machine
-- `.scripts/install_tools.*` manages tool bundles in global or workspace mode
-- `.scripts/install_mcp.*` manages MCP servers in global or workspace mode
+- `.scripts/install_tools.*` manages tool bundles in global or project mode
+- `.scripts/install_mcp.*` manages MCP servers in global or project mode
 - `.scripts/init-project.*` initializes this project
 - `.bootstrap/scripts/bootstrap-project-init.*` is only the internal implementation behind it
 
 ## Skill Principles
 
-- tools are managed as bundles and can be `global` or `workspace` depending on the bundle
+- tools are managed as bundles and can be `global` or `project` depending on the bundle
 - skills always come from original repositories
 - MCP servers are managed separately from tools and skills, with metadata under `.bootstrap/mcp-installs/`
-- each skill install explicitly chooses `global` or `workspace`
-- each MCP install explicitly chooses `global` or `workspace`
+- each skill install explicitly chooses `global` or `project`
+- each MCP install explicitly chooses `global` or `project`
 - larger project-specific skill collections should live under `.bootstrap/skills-cache/` so the visible project root stays clean
 
 ## After Initialization

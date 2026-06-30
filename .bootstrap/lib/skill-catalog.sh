@@ -104,10 +104,10 @@ usage_install() {
   cat <<'EOF'
 Usage:
   ./.scripts/install_skills.sh global all
-  ./.scripts/install_skills.sh workspace drawio-diagrams-enhanced
+  ./.scripts/install_skills.sh project drawio-diagrams-enhanced
   ./.scripts/install_skills.sh all
-  ./.scripts/install_skills.sh frontend-design humanizer markitdown
-  ./.scripts/install_skills.sh ui-ux-pro-max pptx jira-expert markitdown
+  ./.scripts/install_skills.sh frontend-design humanizer
+  ./.scripts/install_skills.sh ui-ux-pro-max pptx jira-expert
   ./.scripts/install_skills.sh --mode global all
 EOF
 }
@@ -124,18 +124,18 @@ EOF
 prompt_mode() {
   local input
   while true; do
-    read -r -p "Choose skill mode [global/workspace]: " input
+    read -r -p "Choose skill mode [global/project]: " input
     case "$input" in
       global)
         printf 'global'
         return
         ;;
-      workspace|projektbezogen|projekt|project)
+      projektbezogen|projekt|project|workspace)
         printf 'project'
         return
         ;;
     esac
-    echo "Please enter 'global' or 'workspace'."
+    echo "Please enter 'global' or 'project'."
   done
 }
 

@@ -8,13 +8,13 @@ These visible commands live under `.scripts/`. The real bootstrap logic lives un
 - `setup-windows.ps1`: prepares the global workbench on Windows
 - `init-project.sh`: visible entry point for project initialization on macOS/Linux
 - `init-project.ps1`: visible entry point for project initialization on Windows
-- `install_tools.sh`: installs tool bundles and asks for `global` or `workspace`
+- `install_tools.sh`: installs tool bundles and asks for `global` or `project`
 - `install_tools.ps1`: Windows entry point for the same tool logic
 - `update_tools.sh`: updates managed tool bundles using the stored mode
 - `update_tools.ps1`: Windows entry point for the same update logic
 - `list_tools.sh`: shows the tool installations managed by this bootstrap
 - `list_tools.ps1`: Windows entry point for the same listing logic
-- `install_skills.sh`: installs skills from original repositories and asks for `global` or `workspace`
+- `install_skills.sh`: installs skills from original repositories and asks for `global` or `project`
 - `install_skills.ps1`: Windows entry point for the same skill-install logic
 - `update_skill.sh`: updates already installed skills using the stored mode and source
 - `update_skill.ps1`: Windows entry point for the same single-skill update logic
@@ -63,7 +63,7 @@ These visible commands live under `.scripts/`. The real bootstrap logic lives un
 
 ## Principles
 
-- tool bundles and skills deliberately choose either `global` or `workspace`
+- tool bundles and skills deliberately choose either `global` or `project`
 - native system tools stay globally preferred; document-heavy Python or Node runtimes can be created locally when a bundle needs them
 - the `pdf-images` bundle includes Tesseract OCR with English by default and targeted German/French `tessdata_fast` language files
 - the `documents` bundle provisions both Python document libraries and Node packages like `mammoth`, `docx`, `xlsx`, `pptxgenjs`, and `pdf-parse`
