@@ -8,9 +8,14 @@ PROJECT_MCP_DIR="$PROJECT_ROOT/runtime/mcps"
 GLOBAL_MCP_DIR="$HOME/.codex/mcp"
 GLOBAL_CODEX_CONFIG="$HOME/.codex/config.toml"
 GLOBAL_AGENTS_FILE="$HOME/.codex/Agents.md"
-PROJECT_AGENTS_FILE="$PROJECT_ROOT/../AGENTS.md"
+PROJECT_AGENTS_FILE="$PROJECT_ROOT/../Agents.md"
 
 SUPPORTED_MCPS=(
+  "macos-mcp"
+  "imap"
+)
+
+LEGACY_APPLE_MCP_NAMES=(
   "apple-calendar"
   "apple-contacts"
   "apple-mail"
@@ -18,7 +23,6 @@ SUPPORTED_MCPS=(
   "apple-messages"
   "apple-notes"
   "apple-reminders"
-  "imap"
 )
 
 declare -a SELECTED_MCP_METADATA_KEYS=()
@@ -71,6 +75,35 @@ sync_global_codex_mcp_config() {
         print "command = \"" command_path "\""
         print "enabled = true"
       }
+    }
+  ' "$GLOBAL_CODEX_CONFIG" > "$tmp_file"
+
+  mv "$tmp_file" "$GLOBAL_CODEX_CONFIG"
+}
+
+remove_global_codex_mcp_config() {
+  local name="$1"
+  local tmp_file
+
+  [[ -f "$GLOBAL_CODEX_CONFIG" ]] || return 0
+  tmp_file="$(mktemp "${TMPDIR:-/tmp}/codex-config.XXXXXX.toml")"
+
+  awk -v section="$name" '
+    BEGIN {
+      in_section = 0
+    }
+    $0 == "[mcp_servers." section "]" {
+      in_section = 1
+      next
+    }
+    in_section && /^\[.*\]$/ {
+      in_section = 0
+    }
+    in_section {
+      next
+    }
+    {
+      print
     }
   ' "$GLOBAL_CODEX_CONFIG" > "$tmp_file"
 
@@ -144,28 +177,10 @@ prompt_mcp_selection() {
       for entry in "${parts[@]}"; do
         normalized="$(printf '%s' "$entry" | xargs)"
         case "$normalized" in
-          1|apple-calendar)
-            selected+=("apple-calendar")
+          1|macos-mcp)
+            selected+=("macos-mcp")
             ;;
-          2|apple-contacts)
-            selected+=("apple-contacts")
-            ;;
-          3|apple-mail)
-            selected+=("apple-mail")
-            ;;
-          4|apple-maps)
-            selected+=("apple-maps")
-            ;;
-          5|apple-messages)
-            selected+=("apple-messages")
-            ;;
-          6|apple-notes)
-            selected+=("apple-notes")
-            ;;
-          7|apple-reminders)
-            selected+=("apple-reminders")
-            ;;
-          8|imap)
+          2|imap)
             selected+=("imap")
             ;;
           *)
@@ -190,22 +205,18 @@ prompt_mcp_selection() {
 usage_install_mcps() {
   cat <<'EOF'
 Usage:
-  ./.scripts/install_mcp.sh all
-  ./.scripts/install_mcp.sh apple-notes
-  ./.scripts/install_mcp.sh apple-messages apple-contacts
-  ./.scripts/install_mcp.sh imap
-  ./.scripts/install_mcp.sh --mode global all
-  ./.scripts/install_mcp.sh --mode project apple-notes
-  ./.scripts/install_mcp.sh --mode project imap
+  ./bin/codex add mcp macos-mcp --scope global
+  ./bin/codex add mcp macos-mcp --scope project
+  ./bin/codex add mcp imap --scope global
 EOF
 }
 
 usage_update_mcps() {
   cat <<'EOF'
 Usage:
-  ./.scripts/update_mcp.sh all
-  ./.scripts/update_mcp.sh apple-notes
-  ./.scripts/update_mcp.sh imap
+  ./bin/codex update mcps --scope both
+  ./bin/codex update mcps macos-mcp --scope global
+  ./bin/codex update mcps imap --scope project
 EOF
 }
 
@@ -417,15 +428,40 @@ This managed MCP server uses the published `imap-mcp-server` package through `np
 EOF
 }
 
-write_apple_service_files() {
+remove_managed_mcp_artifacts() {
+  local name="$1"
+  local mode="$2"
+  local target_dir metadata_path
+
+  target_dir="$(resolve_target_dir "$name" "$mode")"
+  metadata_path="$(mcp_metadata_path_for "$name" "$mode")"
+
+  rm -rf "$target_dir"
+  rm -f "$metadata_path"
+
+  if [[ "$mode" == "global" ]]; then
+    remove_global_codex_mcp_config "$name"
+  fi
+}
+
+remove_legacy_apple_installs() {
+  local mode="$1"
+  local legacy_name
+
+  for legacy_name in "${LEGACY_APPLE_MCP_NAMES[@]}"; do
+    remove_managed_mcp_artifacts "$legacy_name" "$mode"
+  done
+}
+
+write_macos_mcp_files() {
   local target_dir="$1"
   local package_name="$2"
-  local title="$3"
-  local setup_notes="$4"
-  local readme_notes="$5"
-  local repository_url="$6"
+  local repository_url="$3"
   local run_script="$target_dir/run.sh"
   local setup_script="$target_dir/setup.sh"
+  local check_script="$target_dir/check.sh"
+  local verify_jxa_script="$target_dir/verify-jxa.sh"
+  local reveal_node_script="$target_dir/reveal-node-for-fda.sh"
 
   mkdir -p "$target_dir"
   cat > "$run_script" <<EOF
@@ -434,144 +470,130 @@ set -euo pipefail
 
 exec npx -y "$package_name" "\$@"
 EOF
-  cat > "$setup_script" <<EOF
+  cat > "$setup_script" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
+open_permissions() {
+  open "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders"
+  open "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars"
+  open "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"
+  open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+}
+
+case "${1:-}" in
+  --open-permissions)
+    open_permissions
+    ;;
+  --check)
+    exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/check.sh"
+    ;;
+  --verify-jxa)
+    exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify-jxa.sh"
+    ;;
+  --reveal-node)
+    exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/reveal-node-for-fda.sh"
+    ;;
+esac
+
 cat <<'MSG'
-$setup_notes
+macos-mcp setup helpers:
+
+- ./run.sh
+  Startet den MCP-Server via npx.
+
+- ./check.sh
+  Führt den eingebauten Preflight von macos-mcp aus.
+
+- ./verify-jxa.sh
+  Führt die einzelnen osascript-Checks für Contacts, Calendar, Reminders, Mail und Notes aus.
+  Das ist der Schritt, bei dem macOS bei fehlenden Automation-Rechten die Dialoge anzeigen kann.
+
+- ./reveal-node-for-fda.sh
+  Zeigt das echte Node-Binary im Finder und öffnet Full Disk Access.
+
+- ./setup.sh --open-permissions
+  Öffnet die relevanten macOS-Einstellungsseiten.
+
+Wichtig:
+- Automation-Dialoge können nur in einer lokalen GUI-Session erscheinen.
+- Wenn ein osascript-Aufruf hängt, wartet macOS meist auf einen nicht sichtbaren Dialog.
+- Full Disk Access muss für das echte Node-Binary oder die Terminal-App gesetzt sein.
 MSG
 EOF
-  chmod +x "$run_script" "$setup_script"
+  cat > "$check_script" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+
+exec npx -y "$package_name" --check "\$@"
+EOF
+  cat > "$verify_jxa_script" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+commands=(
+  '/usr/bin/osascript -l JavaScript -e '\''Application("Contacts").people().length'\'''
+  '/usr/bin/osascript -l JavaScript -e '\''Application("Calendar").calendars().length'\'''
+  '/usr/bin/osascript -l JavaScript -e '\''Application("Reminders").defaultList().name()'\'''
+  '/usr/bin/osascript -l JavaScript -e '\''Application("Mail").inbox().messages().length'\'''
+  '/usr/bin/osascript -l JavaScript -e '\''Application("Notes").notes().length'\'''
+)
+
+for cmd in "${commands[@]}"; do
+  echo
+  echo "\$ $cmd"
+  eval "$cmd"
+done
+EOF
+  cat > "$reveal_node_script" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+node_path="$(node -e 'console.log(process.execPath)')"
+echo "Node binary: $node_path"
+open -R "$node_path"
+open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+EOF
+  chmod +x "$run_script" "$setup_script" "$check_script" "$verify_jxa_script" "$reveal_node_script"
   cat > "$target_dir/README.md" <<EOF
-# $title
+# macos-mcp
 
 This managed MCP server uses the published \`$package_name\` package through \`npx\`.
 Source repository: \`$repository_url\`
 
 - \`./run.sh\` starts the MCP server
-- \`./setup.sh\` prints runtime requirements and useful safety flags
-
-$readme_notes
+- \`./check.sh\` runs the upstream preflight checks
+- \`./verify-jxa.sh\` runs the individual Automation permission probes
+- \`./reveal-node-for-fda.sh\` helps grant Full Disk Access to the real Node binary
+- \`./setup.sh --open-permissions\` opens the relevant macOS settings panes
 EOF
 }
 
-resolve_apple_service_config() {
-  local name="$1"
-
-APPLE_PACKAGE_NAME=""
-APPLE_TITLE=""
-APPLE_SETUP_NOTES=""
-APPLE_README_NOTES=""
-APPLE_REPOSITORY_URL=""
-
-  case "$name" in
-    apple-calendar)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-calendar-mcp"
-      APPLE_TITLE="Apple Calendar MCP"
-      APPLE_SETUP_NOTES="Apple Calendar MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- This server uses EventKit directly, so the Calendar app does not need to stay open.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Calendar supports optional safety modes. Use \`./run.sh --read-only\` to hide write tools or \`./run.sh --confirm-destructive\` to require explicit confirmation for destructive actions."
-      ;;
-    apple-contacts)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-contacts-mcp"
-      APPLE_TITLE="Apple Contacts MCP"
-      APPLE_SETUP_NOTES="Apple Contacts MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- The Contacts app should be running because this server communicates through AppleScript.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Contacts supports optional safety modes. Keep Contacts open while using the server."
-      ;;
-    apple-mail)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-mail-mcp"
-      APPLE_TITLE="Apple Mail MCP"
-      APPLE_SETUP_NOTES="Apple Mail MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- The Mail app should be running because this server communicates through AppleScript.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Mail supports optional safety modes. Keep Mail open while using the server."
-      ;;
-    apple-maps)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-maps-mcp"
-      APPLE_TITLE="Apple Maps MCP"
-      APPLE_SETUP_NOTES="Apple Maps MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- The Maps app should be running because this server communicates through AppleScript.
-- Apple Maps is UI-oriented and does not expose destructive tool confirmations."
-      APPLE_README_NOTES="Maps is visual and AppleScript-driven. Keep Maps open while using the server."
-      ;;
-    apple-messages)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-messages-mcp"
-      APPLE_TITLE="Apple Messages MCP"
-      APPLE_SETUP_NOTES="Apple Messages MCP setup notes:
-- Requires macOS 13+ and Node.js 22+.
-- Grant Full Disk Access to your terminal app so the server can read the Messages database.
-- The Messages app should be running because this server communicates through AppleScript.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Messages supports optional safety modes and needs both Full Disk Access plus the Messages app running."
-      ;;
-    apple-notes)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-notes-mcp"
-      APPLE_TITLE="Apple Notes MCP"
-      APPLE_SETUP_NOTES="Apple Notes MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- The Notes app should be running because this server communicates through AppleScript.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Notes supports optional safety modes. Keep Notes open while using the server."
-      ;;
-    apple-reminders)
-      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
-      APPLE_PACKAGE_NAME="@griches/apple-reminders-mcp"
-      APPLE_TITLE="Apple Reminders MCP"
-      APPLE_SETUP_NOTES="Apple Reminders MCP setup notes:
-- Requires macOS 13+ and Node.js 18+.
-- This server uses EventKit directly, so the Reminders app does not need to stay open.
-- Optional safety flags: --read-only or --confirm-destructive."
-      APPLE_README_NOTES="Reminders supports optional safety modes. The app itself does not need to stay open."
-      ;;
-    *)
-      echo "Error: Unsupported Apple MCP source: $name" >&2
-      exit 1
-      ;;
-  esac
-}
-
-install_apple_service() {
-  local name="$1"
+install_macos_mcp() {
+  local name="macos-mcp"
   local mode="$2"
   local target_dir run_command setup_command
 
-  resolve_apple_service_config "$name"
   target_dir="$(resolve_target_dir "$name" "$mode")"
   run_command="$target_dir/run.sh"
   setup_command="$target_dir/setup.sh"
 
-  write_apple_service_files \
+  remove_legacy_apple_installs "$mode"
+  write_macos_mcp_files \
     "$target_dir" \
-    "$APPLE_PACKAGE_NAME" \
-    "$APPLE_TITLE" \
-    "$APPLE_SETUP_NOTES" \
-    "$APPLE_README_NOTES" \
-    "$APPLE_REPOSITORY_URL"
-  write_mcp_source_metadata "$target_dir" "$name" "npm" "$APPLE_PACKAGE_NAME"
+    "mcp-macos" \
+    "https://github.com/krmj22/macos-mcp"
+  write_mcp_source_metadata "$target_dir" "$name" "npm" "mcp-macos"
   write_mcp_metadata \
     "$name" \
     "$mode" \
     "server" \
     "npm" \
-    "$APPLE_PACKAGE_NAME" \
+    "mcp-macos" \
     "$target_dir" \
     "$run_command" \
     "$setup_command" \
-    "Uses the published $APPLE_PACKAGE_NAME package from $APPLE_REPOSITORY_URL through npx. Runtime notes are documented in $target_dir/README.md."
+    "Uses the published mcp-macos package from https://github.com/krmj22/macos-mcp through npx. Helper scripts for preflight, Automation, and Full Disk Access are documented in $target_dir/README.md."
 
   if [[ "$mode" == "global" ]]; then
     sync_global_codex_mcp_config "$name" "$run_command"
@@ -608,9 +630,7 @@ install_mcp_by_name() {
   local mode="$2"
 
   case "$name" in
-    apple-calendar|apple-contacts|apple-mail|apple-maps|apple-messages|apple-notes|apple-reminders)
-      install_apple_service "$name" "$mode"
-      ;;
+    macos-mcp) install_macos_mcp "$name" "$mode" ;;
     imap) install_imap "$mode" ;;
     *)
       echo "Error: Unsupported MCP source: $name" >&2

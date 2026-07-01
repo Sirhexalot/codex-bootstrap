@@ -1,17 +1,21 @@
-# Bootstrap Repo
+# Bootstrap Internals
 
-This repository is the hidden `.codex` technical layer for a customer folder.
+This file belongs to the hidden `.codex` bootstrap repository itself.
 
-## Repo Role
+It is not one of the customer-facing files created by `codex init`.
 
-- Keep the customer-facing truth outside this repository in `../AGENTS.md`, `../Memory.md`, and `../Decisions.md`.
-- Keep technical implementation inside `bin/`, `bootstrap/`, `state/`, and `runtime/`.
-- Use `README.md` as the single technical entrypoint.
+## Separation
+
+- Customer-facing files are created in the visible parent folder:
+  - `../Agents.md`
+  - `../Memory.md`
+  - `../Decisions.md`
+- Everything technical stays inside `.codex`.
 
 ## Structure Rules
 
-- `bin/` is the only visible command surface.
+- `bin/` is the command surface.
 - `bootstrap/` contains internal commands, templates, and libraries.
 - `state/` contains managed metadata for Tools, Skills, and MCPs.
 - `runtime/` contains project-local runtimes and automations.
-- Do not reintroduce managed inventory blocks into project `AGENTS.md`.
+- Do not reintroduce customer-owned documents into the hidden runtime structure.

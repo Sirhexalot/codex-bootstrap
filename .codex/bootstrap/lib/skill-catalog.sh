@@ -9,7 +9,7 @@ PROJECT_STATE_DIR="$PROJECT_ROOT/state/skills"
 GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
 GLOBAL_COLLECTIONS_DIR="$HOME/.codex/skills/_vendor"
 GLOBAL_AGENTS_FILE="$HOME/.codex/Agents.md"
-PROJECT_AGENTS_FILE="$PROJECT_ROOT/../AGENTS.md"
+PROJECT_AGENTS_FILE="$PROJECT_ROOT/../Agents.md"
 
 SUPPORTED_SKILLS=(
   "financial-services"

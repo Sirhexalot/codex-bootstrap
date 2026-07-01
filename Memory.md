@@ -113,6 +113,15 @@ This file is the shared project memory for this bootstrap repository.
   - Global installs also upsert the matching `[mcp_servers.<name>]` block in `~/.codex/config.toml`.
   - Runtime notes per server document app-open requirements, Messages Full Disk Access, and optional safety flags such as `--read-only` and `--confirm-destructive`.
 
+### 2026-07-01 - Unified macOS MCP replaced the split Apple server set
+
+- Trigger: a follow-up request to replace the split `Sirhexalot/apple-mcp` setup with `krmj22/macos-mcp` and make permission handling executable from Codex.
+- Goal: manage one reproducible `macos-mcp` source instead of seven separate Apple MCP entries, while giving the user runnable permission helpers for Automation and Full Disk Access.
+- Results:
+  - `bootstrap/lib/mcp-catalog.sh` now supports `macos-mcp` as the managed Apple source and removes legacy `apple-*` managed installs when `macos-mcp` is installed.
+  - The generated runtime now includes `run.sh`, `setup.sh`, `check.sh`, `verify-jxa.sh`, and `reveal-node-for-fda.sh`.
+  - `check.sh` wraps upstream `mcp-macos --check`, while `verify-jxa.sh` runs the individual `osascript` probes that can trigger macOS Automation prompts in a local GUI session.
+
 ## Open Points
 
 - Optionally add more skill sources to the catalog later.

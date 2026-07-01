@@ -2,9 +2,9 @@
 
 This repository is intended to live as `.codex` inside a customer code folder.
 
-Visible customer documents live one level above this repository:
+After `codex init`, the only customer-facing project documents live one level above this repository:
 
-- `../AGENTS.md`
+- `../Agents.md`
 - `../Memory.md`
 - `../Decisions.md`
 
@@ -58,8 +58,22 @@ The hidden repository owns only the technical runtime:
 ## Rules
 
 - `setup` prepares only the shared global workbench.
-- `init` creates the visible customer files in the parent folder.
+- `init` creates `../Agents.md`, `../Memory.md`, and `../Decisions.md` in the visible customer root.
 - `state/` stores managed metadata only.
 - `runtime/` stores project-local runtimes only.
 - `bootstrap/` is internal implementation.
-- Inventories are shown with `codex list`, not through generated blocks inside `AGENTS.md`.
+- Inventories are shown with `codex list`, not through generated blocks inside `Agents.md`.
+
+## MCP Notes
+
+The managed macOS app MCP source is `macos-mcp`, backed by `krmj22/macos-mcp` and the npm package `mcp-macos`.
+
+For a global install from this bootstrap:
+
+```bash
+./bin/codex add mcp macos-mcp --scope global
+~/.codex/mcp/macos-mcp/check.sh
+~/.codex/mcp/macos-mcp/verify-jxa.sh
+```
+
+`check.sh` runs the upstream preflight. `verify-jxa.sh` runs the individual `osascript` probes so macOS can show the Automation prompts in a local GUI Codex session. For Mail and Messages, `~/.codex/mcp/macos-mcp/reveal-node-for-fda.sh` reveals the real Node binary and opens Full Disk Access settings.

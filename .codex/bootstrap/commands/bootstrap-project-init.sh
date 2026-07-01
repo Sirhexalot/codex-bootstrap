@@ -107,6 +107,7 @@ agent:
 
 memory:
   long_term_memory: "Memory MCP Server"
+  visible_project_agents: "../Agents.md"
   visible_project_memory: "../Memory.md"
   global_memory: "~/.codex/Memory.md"
 
@@ -189,7 +190,7 @@ EOF
   tools="$(prompt_default "Relevant systems" "GitHub, Google Workspace, Slack")"
   channels="$(prompt_default "Preferred channels" "Codex")"
 
-  render_template "$template_dir/AGENTS.template.md" "$customer_dir/AGENTS.md"
+  render_template "$template_dir/Agents.template.md" "$customer_dir/Agents.md"
   render_template "$template_dir/Memory.template.md" "$customer_dir/Memory.md"
   render_template "$template_dir/Decisions.template.md" "$customer_dir/Decisions.md"
   write_project_yaml
@@ -199,12 +200,12 @@ EOF
   echo
   echo "Project initialized."
   echo "Visible project files:"
-  echo "  $customer_dir/AGENTS.md"
+  echo "  $customer_dir/Agents.md"
   echo "  $customer_dir/Memory.md"
   echo "  $customer_dir/Decisions.md"
   echo
   echo "Next recommended commands:"
   echo "  ./.codex/bin/codex add tool documents --scope project"
   echo "  ./.codex/bin/codex add skill drawio-diagrams-enhanced --scope project"
-  echo "  ./.codex/bin/codex add mcp apple-notes --scope global"
+  echo "  ./.codex/bin/codex add mcp macos-mcp --scope global"
 }

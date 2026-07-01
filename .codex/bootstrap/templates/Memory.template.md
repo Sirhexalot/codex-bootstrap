@@ -26,5 +26,5 @@
 ### __TIMESTAMP__ - Project initialized
 
 - Trigger: `codex init`
-- Result: created `AGENTS.md`, `Memory.md`, and `Decisions.md` in the customer folder
+- Result: created `Agents.md`, `Memory.md`, and `Decisions.md` in the customer folder
 - Next: install required Tools, Skills, and MCPs with `./.codex/bin/codex add ...`
