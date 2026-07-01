@@ -469,6 +469,7 @@ write_apple_service_files() {
   local title="$3"
   local setup_notes="$4"
   local readme_notes="$5"
+  local repository_url="$6"
   local run_script="$target_dir/run.sh"
   local setup_script="$target_dir/setup.sh"
 
@@ -492,6 +493,7 @@ EOF
 # $title
 
 This managed MCP server uses the published \`$package_name\` package through \`npx\`.
+Source repository: \`$repository_url\`
 
 - \`./run.sh\` starts the MCP server
 - \`./setup.sh\` prints runtime requirements and useful safety flags
@@ -503,13 +505,15 @@ EOF
 resolve_apple_service_config() {
   local name="$1"
 
-  APPLE_PACKAGE_NAME=""
-  APPLE_TITLE=""
-  APPLE_SETUP_NOTES=""
-  APPLE_README_NOTES=""
+APPLE_PACKAGE_NAME=""
+APPLE_TITLE=""
+APPLE_SETUP_NOTES=""
+APPLE_README_NOTES=""
+APPLE_REPOSITORY_URL=""
 
   case "$name" in
     apple-calendar)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-calendar-mcp"
       APPLE_TITLE="Apple Calendar MCP"
       APPLE_SETUP_NOTES="Apple Calendar MCP setup notes:
@@ -519,6 +523,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Calendar supports optional safety modes. Use \`./run.sh --read-only\` to hide write tools or \`./run.sh --confirm-destructive\` to require explicit confirmation for destructive actions."
       ;;
     apple-contacts)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-contacts-mcp"
       APPLE_TITLE="Apple Contacts MCP"
       APPLE_SETUP_NOTES="Apple Contacts MCP setup notes:
@@ -528,6 +533,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Contacts supports optional safety modes. Keep Contacts open while using the server."
       ;;
     apple-mail)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-mail-mcp"
       APPLE_TITLE="Apple Mail MCP"
       APPLE_SETUP_NOTES="Apple Mail MCP setup notes:
@@ -537,6 +543,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Mail supports optional safety modes. Keep Mail open while using the server."
       ;;
     apple-maps)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-maps-mcp"
       APPLE_TITLE="Apple Maps MCP"
       APPLE_SETUP_NOTES="Apple Maps MCP setup notes:
@@ -546,6 +553,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Maps is visual and AppleScript-driven. Keep Maps open while using the server."
       ;;
     apple-messages)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-messages-mcp"
       APPLE_TITLE="Apple Messages MCP"
       APPLE_SETUP_NOTES="Apple Messages MCP setup notes:
@@ -556,6 +564,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Messages supports optional safety modes and needs both Full Disk Access plus the Messages app running."
       ;;
     apple-notes)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-notes-mcp"
       APPLE_TITLE="Apple Notes MCP"
       APPLE_SETUP_NOTES="Apple Notes MCP setup notes:
@@ -565,6 +574,7 @@ resolve_apple_service_config() {
       APPLE_README_NOTES="Notes supports optional safety modes. Keep Notes open while using the server."
       ;;
     apple-reminders)
+      APPLE_REPOSITORY_URL="https://github.com/Sirhexalot/apple-mcp"
       APPLE_PACKAGE_NAME="@griches/apple-reminders-mcp"
       APPLE_TITLE="Apple Reminders MCP"
       APPLE_SETUP_NOTES="Apple Reminders MCP setup notes:
@@ -595,7 +605,8 @@ install_apple_service() {
     "$APPLE_PACKAGE_NAME" \
     "$APPLE_TITLE" \
     "$APPLE_SETUP_NOTES" \
-    "$APPLE_README_NOTES"
+    "$APPLE_README_NOTES" \
+    "$APPLE_REPOSITORY_URL"
   write_mcp_source_metadata "$target_dir" "$name" "npm" "$APPLE_PACKAGE_NAME"
   write_mcp_metadata \
     "$name" \
@@ -606,7 +617,7 @@ install_apple_service() {
     "$target_dir" \
     "$run_command" \
     "$setup_command" \
-    "Uses the published $APPLE_PACKAGE_NAME package through npx. Runtime notes are documented in $target_dir/README.md."
+    "Uses the published $APPLE_PACKAGE_NAME package from $APPLE_REPOSITORY_URL through npx. Runtime notes are documented in $target_dir/README.md."
 
   if [[ "$mode" == "global" ]]; then
     sync_global_codex_mcp_config "$name" "$run_command"

@@ -105,7 +105,7 @@ This file is the shared project memory for this bootstrap repository.
 
 ### 2026-07-01 - Apple app MCP catalog replaced the earlier iCloud MCP draft
 
-- Trigger: a follow-up request to replace the earlier `MrGo2/icloud-mcp` draft with `griches/apple-mcp`.
+- Trigger: a follow-up request to replace the earlier `MrGo2/icloud-mcp` draft with `Sirhexalot/apple-mcp`.
 - Goal: model Apple app MCPs in a way that matches the bootstrap surface better, with one managed MCP source per actual upstream server.
 - Results:
   - `.bootstrap/lib/mcp-catalog.sh` now exposes `apple-calendar`, `apple-contacts`, `apple-mail`, `apple-maps`, `apple-messages`, `apple-notes`, and `apple-reminders` instead of a single `icloud` source.

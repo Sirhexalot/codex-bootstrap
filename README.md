@@ -181,6 +181,8 @@ Currently supported MCP sources:
 
 Global MCP installs also write a matching `[mcp_servers.<name>]` entry into `~/.codex/config.toml`, so Codex can pick them up without a separate manual config step.
 
+Current Apple MCP setup uses the split `@griches` servers (`apple-calendar`, `apple-contacts`, `apple-mail`, `apple-messages`, `apple-notes`, `apple-reminders`). The earlier single iCloud MCP draft is no longer the active bootstrap path.
+
 ## Structure
 
 ```text
