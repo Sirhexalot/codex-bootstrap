@@ -72,7 +72,7 @@ This file is the shared project memory for this bootstrap repository.
 - Goal: avoid redundant JIRA skills and keep `jira-expert` as the single managed JIRA-oriented skill.
 - Results:
   - The temporary managed `jira` catalog entry was removed from `.bootstrap/lib/skill-catalog.sh`.
-  - The global install at `~/.codex/skills/jira` and its managed metadata were removed.
+  - The global install at `~/.codex/.skillsjira` and its managed metadata were removed.
   - The managed global skills block in `~/.codex/Agents.md` was resynchronized.
 
 ### 2026-06-25 - MarkItDown skill promoted into managed bootstrap catalog
@@ -82,7 +82,7 @@ This file is the shared project memory for this bootstrap repository.
 - Results:
   - `.bootstrap/lib/skill-catalog.sh` now supports a managed `markitdown` skill sourced from `jimmc414/Kosmos`.
   - `.scripts/README.md` now lists `markitdown` among the supported skill sources.
-  - Existing global installs at `~/.codex/skills/markitdown` can now be adopted into managed bootstrap metadata.
+  - Existing global installs at `~/.codex/.skillsmarkitdown` can now be adopted into managed bootstrap metadata.
 
 ### 2026-06-30 - Root-only project docs and hidden operational folders
 

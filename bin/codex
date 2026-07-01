@@ -1,0 +1,284 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+source_tool_lib() {
+  # shellcheck disable=SC1090
+  source "$ROOT_DIR/bootstrap/lib/tool-catalog.sh"
+}
+
+source_skill_lib() {
+  # shellcheck disable=SC1090
+  source "$ROOT_DIR/bootstrap/lib/skill-catalog.sh"
+}
+
+source_mcp_lib() {
+  # shellcheck disable=SC1090
+  source "$ROOT_DIR/bootstrap/lib/mcp-catalog.sh"
+}
+
+source_init_lib() {
+  # shellcheck disable=SC1090
+  source "$ROOT_DIR/bootstrap/commands/bootstrap-project-init.sh"
+}
+
+usage() {
+  cat <<'EOF'
+Usage:
+  ./.codex/bin/codex setup
+  ./.codex/bin/codex init
+  ./.codex/bin/codex add tool <name> --scope global|project
+  ./.codex/bin/codex add skill <name> --scope global|project
+  ./.codex/bin/codex add mcp <name> --scope global|project
+  ./.codex/bin/codex list [all|tools|skills|mcps] --scope global|project|both
+  ./.codex/bin/codex update [all|tools|skills|mcps] [name...] --scope global|project|both
+EOF
+}
+
+normalize_scope() {
+  case "${1:-both}" in
+    global|project|both) printf '%s\n' "${1:-both}" ;;
+    workspace) printf 'project\n' ;;
+    *)
+      echo "Invalid scope: $1" >&2
+      exit 1
+      ;;
+  esac
+}
+
+matches_scope() {
+  local item_scope="$1"
+  local selected_scope="$2"
+  [[ "$selected_scope" == "both" || "$item_scope" == "$selected_scope" ]]
+}
+
+load_metadata() {
+  unset NAME MODE KIND SCOPE SOURCE TARGET_DIR COMMANDS UPDATED_AT NOTES TYPE REPO_URL SOURCE_KIND SOURCE_REF RUN_COMMAND SETUP_COMMAND PACKAGES
+  # shellcheck disable=SC1090
+  source "$1"
+  [[ -n "${SCOPE:-}" ]] || SCOPE="${MODE:-}"
+  [[ -n "${KIND:-}" ]] || KIND="$2"
+  [[ -n "${SOURCE:-}" ]] || SOURCE="${REPO_URL:-${SOURCE_KIND:-}}"
+  [[ -n "${COMMANDS:-}" ]] || COMMANDS="${RUN_COMMAND:-}"
+  [[ -n "${UPDATED_AT:-}" ]] || UPDATED_AT="${INSTALLED_AT:-}"
+}
+
+print_inventory_group() {
+  local kind="$1"
+  local directory="$2"
+  local selected_scope="$3"
+  local label="$4"
+  local found=0
+  local file
+
+  echo "$label"
+  while IFS= read -r file; do
+    load_metadata "$file" "$kind"
+    matches_scope "$SCOPE" "$selected_scope" || continue
+    found=1
+    printf -- "- %s | %s | %s | %s\n" "$kind" "$SCOPE" "$NAME" "${TARGET_DIR:-n/a}"
+  done < <(find "$directory" -maxdepth 1 -type f -name '*.env' | LC_ALL=C sort)
+
+  if [[ "$found" -eq 0 ]]; then
+    echo "- none"
+  fi
+  echo
+}
+
+codex_list() {
+  local target="${1:-all}"
+  shift || true
+  local scope="both"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --scope)
+        scope="$(normalize_scope "${2:-}")"
+        shift 2
+        ;;
+      *)
+        echo "Unknown list option: $1" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  case "$target" in
+    all)
+      print_inventory_group tool "$ROOT_DIR/state/tools" "$scope" "Tools"
+      print_inventory_group skill "$ROOT_DIR/state/skills" "$scope" "Skills"
+      print_inventory_group mcp "$ROOT_DIR/state/mcps" "$scope" "MCPs"
+      ;;
+    tools) print_inventory_group tool "$ROOT_DIR/state/tools" "$scope" "Tools" ;;
+    skills) print_inventory_group skill "$ROOT_DIR/state/skills" "$scope" "Skills" ;;
+    mcps) print_inventory_group mcp "$ROOT_DIR/state/mcps" "$scope" "MCPs" ;;
+    *)
+      echo "Unknown list target: $target" >&2
+      exit 1
+      ;;
+  esac
+}
+
+update_from_state() {
+  local kind="$1"
+  local scope="$2"
+  shift 2
+  local requested=("$@")
+  local dir file matched
+
+  case "$kind" in
+    tool|tools)
+      dir="$ROOT_DIR/state/tools"
+      source_tool_lib
+      ;;
+    skill|skills)
+      dir="$ROOT_DIR/state/skills"
+      source_skill_lib
+      ;;
+    mcp|mcps)
+      dir="$ROOT_DIR/state/mcps"
+      source_mcp_lib
+      ;;
+    *)
+      echo "Unknown update target: $kind" >&2
+      exit 1
+      ;;
+  esac
+
+  while IFS= read -r file; do
+    load_metadata "$file" "${kind%s}"
+    matches_scope "$SCOPE" "$scope" || continue
+    if [[ "${requested[0]:-all}" != "all" ]]; then
+      matched=0
+      for req in "${requested[@]}"; do
+        if [[ "$NAME" == "$req" ]]; then
+          matched=1
+          break
+        fi
+      done
+      [[ "$matched" -eq 1 ]] || continue
+    fi
+
+    case "$kind" in
+      tool|tools)
+        echo "Updating tool $NAME ($SCOPE)..."
+        install_tool_bundle_by_name "$NAME" "$SCOPE"
+        ;;
+      skill|skills)
+        echo "Updating skill $NAME ($SCOPE)..."
+        install_skill_by_name "$NAME" "$SCOPE"
+        ;;
+      mcp|mcps)
+        echo "Updating MCP $NAME ($SCOPE)..."
+        install_mcp_by_name "$NAME" "$SCOPE"
+        ;;
+    esac
+  done < <(find "$dir" -maxdepth 1 -type f -name '*.env' | LC_ALL=C sort)
+}
+
+codex_update() {
+  local target="${1:-all}"
+  shift || true
+  local scope="both"
+  local -a names=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --scope)
+        scope="$(normalize_scope "${2:-}")"
+        shift 2
+        ;;
+      *)
+        names+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  [[ ${#names[@]} -gt 0 ]] || names=("all")
+
+  case "$target" in
+    all)
+      update_from_state tools "$scope" "all"
+      update_from_state skills "$scope" "all"
+      update_from_state mcps "$scope" "all"
+      ;;
+    tool|tools) update_from_state tools "$scope" "${names[@]}" ;;
+    skill|skills) update_from_state skills "$scope" "${names[@]}" ;;
+    mcp|mcps) update_from_state mcps "$scope" "${names[@]}" ;;
+    *)
+      echo "Unknown update target: $target" >&2
+      exit 1
+      ;;
+  esac
+
+  echo
+  echo "Final inventory:"
+  codex_list all --scope "$scope"
+}
+
+cmd="${1:-}"
+[[ $# -gt 0 ]] && shift || true
+
+case "$cmd" in
+  setup)
+    source_tool_lib
+    bootstrap_install_tools --mode global all
+    ;;
+  init)
+    source_init_lib
+    bootstrap_init_project
+    ;;
+  add)
+    kind="${1:-}"
+    name="${2:-}"
+    shift 2 || true
+    scope="project"
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --scope)
+          scope="$(normalize_scope "${2:-}")"
+          shift 2
+          ;;
+        *)
+          echo "Unknown add option: $1" >&2
+          exit 1
+          ;;
+      esac
+    done
+    [[ "$scope" != "both" ]] || { echo "Add requires --scope global or --scope project." >&2; exit 1; }
+    case "$kind" in
+      tool|tools)
+        source_tool_lib
+        bootstrap_install_tools --mode "$scope" "$name"
+        ;;
+      skill|skills)
+        source_skill_lib
+        bootstrap_install_skills --mode "$scope" "$name"
+        ;;
+      mcp|mcps)
+        source_mcp_lib
+        bootstrap_install_mcps --mode "$scope" "$name"
+        ;;
+      *)
+        echo "Unknown add target: $kind" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  list)
+    codex_list "$@"
+    ;;
+  update)
+    codex_update "$@"
+    ;;
+  -h|--help|help|"")
+    usage
+    ;;
+  *)
+    echo "Unknown command: $cmd" >&2
+    usage
+    exit 1
+    ;;
+esac

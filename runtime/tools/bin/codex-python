@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+"/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents/python/bin/python" "$@"

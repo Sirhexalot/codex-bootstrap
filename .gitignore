@@ -25,10 +25,18 @@ __pycache__/
 # Local Claude notes
 .claude/*.local.md
 
-# Bootstrap-local skill state
-.bootstrap/skills-cache/
-.bootstrap/skill-installs/*.env
-.bootstrap/tool-installs/*.env
-.bootstrap/tools/*
-!.bootstrap/tools/.gitkeep
-skills/**/.skill-source.env
+# Bootstrap-local state
+# Customer-facing files created by `codex init` live in the parent folder.
+# They are intentionally outside this repository and therefore not tracked here:
+#   ../AGENTS.md
+#   ../Memory.md
+#   ../Decisions.md
+state/tools/*.env
+state/skills/*.env
+state/mcps/*.env
+runtime/tools/*
+!runtime/tools/.gitkeep
+!runtime/tools/bin/
+!runtime/tools/documents/
+runtime/skills/**/.skill-source.env
+runtime/mcps/**/.mcp-source.env

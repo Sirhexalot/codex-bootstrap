@@ -1,11 +1,12 @@
 bootstrap:
   name: "codex-agent-bootstrap"
-  version: "0.2.0"
+  version: "0.3.0"
   initialized_at: null
-  manifest: ".bootstrap/manifest.json"
+  manifest: "bootstrap/manifest.json"
 
 project:
-  name: "Bootstrap Agent"
+  name: "Codex Bootstrap"
+  status: "bootstrap"
   customer: null
   purpose: null
   owner: null
@@ -14,62 +15,32 @@ project:
   role: null
   country: null
   timezone: null
-  status: "bootstrap"
-  language: "en"
+  language: "de"
+  customer_root: ".."
 
 agent:
-  default_tone: "friendly, precise, practical"
+  default_tone: "freundlich, präzise, praktisch"
   autonomy_level: "confirm_before_external_actions"
   risk_level: "medium"
-  primary_users: []
-  out_of_scope:
-    - "No external actions affecting customers, accounts, data, or costs without explicit approval."
-    - "Do not store credentials, API keys, or tokens in project files."
-    - "Do not enable production automations without documented purpose, access, and stop criteria."
   boundaries: null
 
 memory:
   long_term_memory: "Memory MCP Server"
-  project_memory: "Memory.md"
-  automation_memory_required: true
-  update_project_memory_on_relevant_changes: true
+  visible_project_memory: "../Memory.md"
+  global_memory: "~/.codex/Memory.md"
 
 folders:
-  automations: ".bootstrap/automations"
-  scripts: ".scripts"
-  mcp: ".mcp"
-  skills: "skills"
-  bootstrap: ".bootstrap"
+  visible_docs_root: ".."
+  bin: "bin"
+  bootstrap: "bootstrap"
+  state: "state"
+  runtime: "runtime"
 
-tools:
-  tools_scope: "global_or_project"
-  skills_scope: "global_or_project"
-  bundles:
-    - "core"
-    - "documents"
-    - "pdf-images"
-    - "diagrams"
-    - "browser-automation"
-    - "composio-cli"
-  required:
-    - "Codex"
-    - "Python"
-    - "Node.js"
-    - "Git"
-  optional: []
-
-onboarding:
-  first_prompt: "Please initialize this project as a customer agent."
-  read_first:
-    - "project.yaml"
-    - "Agents.md"
-    - "Memory.md"
-    - "Decisions.md"
-
-heartbeat:
-  enabled: true
-  name: "Heartbeat"
-  schedule: "weekdays hourly from 09:00 to 17:00"
-  timezone: "Europe/Berlin"
-  automation_path: ".bootstrap/automations/heartbeat"
-  purpose: "Regularly check whether memory, documentation, decisions, and runbooks are being maintained."
+extensions:
+  scopes:
+    - "global"
+    - "project"
+  supported_kinds:
+    - "tool"
+    - "skill"
+    - "mcp"

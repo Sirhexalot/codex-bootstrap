@@ -1,267 +1,65 @@
-# Codex Agent Bootstrap
+# Codex Bootstrap
 
-This repository is a starter kit you can hand to a friend, team, or customer so it can become a well-structured Codex agent.
+This repository is intended to live as `.codex` inside a customer code folder.
 
-The design is intentionally two-step:
+Visible customer documents live one level above this repository:
 
-1. the hidden setup commands prepare the global workbench
-2. project initialization turns this folder into a concrete agent with its own identity, `Agents.md`, `Memory.md`, and `Decisions.md`
+- `../AGENTS.md`
+- `../Memory.md`
+- `../Decisions.md`
 
-## What This Repository Should Provide
-
-- a fast path to a usable new agent
-- global workbench tooling for macOS and Windows
-- tool bundles installable in global or project mode
-- MCP servers installable in global or project mode
-- structured onboarding for the real agent
-- skills installable and updatable from original repositories
-- a clean future project structure, with bootstrap internals living under `.bootstrap/`
-
-## Quick Start
-
-### 1. Prepare the Global Workbench
-
-macOS:
-
-```bash
-chmod +x ./.scripts/setup-mac.sh
-./.scripts/setup-mac.sh
-```
-
-Windows:
-
-```powershell
-.\.scripts\setup-windows.ps1
-```
-
-These scripts install global workbench tooling only. They do **not** install Codex, project-specific files, or skills.
-
-### 2. Open the Project in Codex
-
-Open the folder in Codex and write:
+The hidden repository owns only the technical runtime:
 
 ```text
-Please initialize this project as a customer agent.
+.codex/
+  README.md
+  project.yaml
+  bin/
+    codex
+    codex.ps1
+  bootstrap/
+    commands/
+    lib/
+    templates/
+    catalogs/
+  state/
+    tools/
+    skills/
+    mcps/
+  runtime/
+    tools/
+    skills/
+    mcps/
+    automations/
 ```
 
-The agent should then:
+## Main Flow
 
-- read the bootstrap files first
-- run an interview
-- capture the project identity
-- write the final `Agents.md`
-- fill in `project.yaml`, `Agents.md`, `Memory.md`, and `Decisions.md`
-- create or update `.bootstrap/automations/heartbeat/`
+1. Clone this repository into the customer folder as `.codex`.
+2. Run `./.codex/bin/codex init`.
+3. Answer the project questions.
+4. Manage extensions through the same CLI:
+   - `./.codex/bin/codex add ...`
+   - `./.codex/bin/codex list ...`
+   - `./.codex/bin/codex update ...`
 
-### 3. Install Tool Bundles Intentionally
-
-The tool scripts use a target mode:
-
-- `global`
-- `project`
-
-Available commands:
+## Commands
 
 ```bash
-./.scripts/install_tools.sh
-./.scripts/update_tools.sh
-./.scripts/list_tools.sh
+./.codex/bin/codex setup
+./.codex/bin/codex init
+./.codex/bin/codex add tool <name> --scope global|project
+./.codex/bin/codex add skill <name> --scope global|project
+./.codex/bin/codex add mcp <name> --scope global|project
+./.codex/bin/codex list [all|tools|skills|mcps] --scope global|project|both
+./.codex/bin/codex update [all|tools|skills|mcps] [name...] --scope global|project|both
 ```
 
-Windows:
+## Rules
 
-```powershell
-.\.scripts\install_tools.ps1
-.\.scripts\update_tools.ps1
-.\.scripts\list_tools.ps1
-```
-
-Accepted mode forms are now the same for tools and skills on both platforms:
-
-- `global ...`
-- `project ...`
-- `--mode global ...`
-- `--mode project ...`
-- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
-
-Examples:
-
-```bash
-./.scripts/install_tools.sh global all
-./.scripts/install_tools.sh project documents browser-automation
-```
-
-```powershell
-.\.scripts\install_tools.ps1 -Mode global all
-.\.scripts\install_tools.ps1 project documents browser-automation
-```
-
-Default bundles:
-
-- `core`
-- `documents`
-- `pdf-images`
-- `diagrams`
-- `browser-automation`
-- `composio-cli`
-
-### 4. Install Skills Intentionally
-
-The skill scripts also use a target mode:
-
-- `global`
-- `project`
-
-Available commands:
-
-```bash
-./.scripts/install_skills.sh
-./.scripts/update_skills.sh
-./.scripts/list_skills.sh
-```
-
-Windows:
-
-```powershell
-.\.scripts\install_skills.ps1
-.\.scripts\update_skills.ps1
-.\.scripts\list_skills.ps1
-```
-
-Accepted mode forms are the same as for tools:
-
-- `global ...`
-- `project ...`
-- `--mode global ...`
-- `--mode project ...`
-- on PowerShell additionally `-Mode global ...` and `-Mode project ...`
-
-Examples:
-
-```bash
-./.scripts/install_skills.sh global all
-./.scripts/install_skills.sh project drawio-diagrams-enhanced
-```
-
-```powershell
-.\.scripts\install_skills.ps1 -Mode global all
-.\.scripts\install_skills.ps1 project drawio-diagrams-enhanced
-```
-
-### 5. Install MCP Servers Intentionally
-
-The MCP scripts also ask for a target mode and can open an interactive multi-select when you call them without MCP names.
-
-Available commands:
-
-```bash
-./.scripts/install_mcp.sh
-./.scripts/update_mcp.sh
-./.scripts/list_mcps.sh
-```
-
-Windows:
-
-```powershell
-.\.scripts\install_mcp.ps1
-.\.scripts\update_mcp.ps1
-.\.scripts\list_mcps.ps1
-```
-
-Currently supported MCP sources:
-
-- `apple-calendar`
-- `apple-contacts`
-- `apple-mail`
-- `apple-maps`
-- `apple-messages`
-- `apple-notes`
-- `apple-reminders`
-- `imap`
-
-Global MCP installs also write a matching `[mcp_servers.<name>]` entry into `~/.codex/config.toml`, so Codex can pick them up without a separate manual config step.
-
-Current Apple MCP setup uses the split `@griches` servers (`apple-calendar`, `apple-contacts`, `apple-mail`, `apple-messages`, `apple-notes`, `apple-reminders`). The earlier single iCloud MCP draft is no longer the active bootstrap path.
-
-## Structure
-
-```text
-bootstrap-agent/
-├─ .bootstrap/
-├─ .mcp/
-├─ .scripts/
-├─ Agents.md
-├─ Decisions.md
-├─ Memory.md
-├─ README.md
-├─ START_HERE.md
-├─ project.yaml
-└─ skills/
-```
-
-## Responsibility Boundaries
-
-### Global Workbench Setup
-
-- `.scripts/setup-mac.sh`
-- `.scripts/setup-windows.ps1`
-
-These install the global standard bundles for the workbench. That includes native base tools for Git, Curl, `rg`, Draw.io, PDF/image/OCR work, and browser automation, plus a central Python workbench under `~/.codex/workbench/python` for Office and document tasks. The `pdf-images` bundle includes Tesseract OCR; English ships with Tesseract, and German/French are installed as targeted `tessdata_fast` language files instead of the full Homebrew language pack. The `documents` bundle also installs Node-based document packages such as `mammoth`, `docx`, `xlsx`, `pptxgenjs`, and `pdf-parse`. Daily-use wrappers such as `codex-python` and `codex-markitdown` are also created there, and the bundled document stack includes `pypdf`, `pymupdf`, and the native Homebrew `pymupdf` formula on macOS.
-
-### Bootstrap Internals
-
-- `.bootstrap/`
-
-Contains templates, metadata, tool, skill, and MCP catalogs, helper logic for initialization and skill management, and project automations under `.bootstrap/automations/`.
-
-### Visible Project Commands
-
-- `.scripts/init-project.sh`
-- `.scripts/init-project.ps1`
-- `.scripts/install_tools.sh`
-- `.scripts/install_tools.ps1`
-- `.scripts/update_tools.sh`
-- `.scripts/update_tools.ps1`
-- `.scripts/list_tools.sh`
-- `.scripts/list_tools.ps1`
-- `.scripts/install_skills.sh`
-- `.scripts/install_skills.ps1`
-- `.scripts/update_skill.sh`
-- `.scripts/update_skill.ps1`
-- `.scripts/update_skills.sh`
-- `.scripts/update_skills.ps1`
-- `.scripts/list_skills.sh`
-- `.scripts/list_skills.ps1`
-- `.scripts/install_mcp.sh`
-- `.scripts/install_mcp.ps1`
-- `.scripts/update_mcp.sh`
-- `.scripts/update_mcp.ps1`
-- `.scripts/update_mcps.sh`
-- `.scripts/update_mcps.ps1`
-- `.scripts/list_mcps.sh`
-- `.scripts/list_mcps.ps1`
-
-These are thin entry points. The real logic lives under `.bootstrap/`.
-
-Shortcut summary:
-
-- `.scripts/setup-*` prepares the machine
-- `.scripts/install_tools.*` manages tool bundles in global or project mode
-- `.scripts/install_mcp.*` manages MCP servers in global or project mode
-- `.scripts/init-project.*` initializes this project
-- `.bootstrap/scripts/bootstrap-project-init.*` is only the internal implementation behind it
-
-## Skill Principles
-
-- tools are managed as bundles and can be `global` or `project` depending on the bundle
-- skills always come from original repositories
-- MCP servers are managed separately from tools and skills, with metadata under `.bootstrap/mcp-installs/`
-- each skill install explicitly chooses `global` or `project`
-- each MCP install explicitly chooses `global` or `project`
-- larger project-specific skill collections should live under `.bootstrap/skills-cache/` so the visible project root stays clean
-
-## After Initialization
-
-After the first onboarding run, the visible `Agents.md` belongs entirely to the concrete agent project.
-
-The bootstrap-specific rules remain only under `.bootstrap/`, so the new user gets a clear, uncluttered project workspace.
+- `setup` prepares only the shared global workbench.
+- `init` creates the visible customer files in the parent folder.
+- `state/` stores managed metadata only.
+- `runtime/` stores project-local runtimes only.
+- `bootstrap/` is internal implementation.
+- Inventories are shown with `codex list`, not through generated blocks inside `AGENTS.md`.

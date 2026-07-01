@@ -1,47 +1,7 @@
-# Start Here
+# Redirect
 
-This folder is not yet a finished customer agent. It is a bootstrap.
+See `README.md`.
 
-When you open this folder in Codex, the agent should read the bootstrap files first, interview you, and turn the repository into a real agent for your project.
+This repository now has a single technical entrypoint:
 
-## Recommended First Prompt
-
-```text
-Please initialize this project as a customer agent.
-```
-
-## What Should Happen Next
-
-The agent should:
-
-1. read `Agents.md`, `project.yaml`, `Memory.md`, `Decisions.md`, and `.bootstrap/README.md`
-2. ask about the user name, agent name, purpose, role, country, timezone, language, tone, and boundaries
-3. write the final `Agents.md` for the project
-4. adapt `project.yaml`, `Agents.md`, `Memory.md`, and `Decisions.md` to the real context
-5. create or update the default `Heartbeat` automation under `.bootstrap/automations/`
-6. show how to install tool bundles, skills, and MCP servers globally or in project mode
-
-## Prepare the Workbench First
-
-If the local environment is not prepared yet:
-
-macOS:
-
-```bash
-chmod +x ./.scripts/setup-mac.sh
-./.scripts/setup-mac.sh
-```
-
-Windows:
-
-```powershell
-.\.scripts\setup-windows.ps1
-```
-
-These scripts install the global standard bundles for the workbench. Codex itself is not installed here.
-
-## Important Distinction
-
-- `.scripts/setup-mac.sh` and `.scripts/setup-windows.ps1` prepare the machine.
-- `.scripts/init-project.sh` and `.scripts/init-project.ps1` initialize this specific project.
-- Internal bootstrap logic lives separately under `.bootstrap/`.
+- `README.md` explains the structure and the `codex` CLI.
