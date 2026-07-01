@@ -1,50 +1,22 @@
 {
   "bootstrap": {
     "name": "codex-agent-bootstrap",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
-  "initialized": false,
-  "initializedAt": null,
+  "initialized": true,
+  "initializedAt": "2026-07-01 17:23 CEST",
   "entrypoints": [
-    ".scripts/setup-mac.sh",
-    ".scripts/setup-windows.ps1",
-    ".scripts/init-project.sh",
-    ".scripts/init-project.ps1",
-    ".scripts/install_tools.sh",
-    ".scripts/install_tools.ps1",
-    ".scripts/update_tools.sh",
-    ".scripts/update_tools.ps1",
-    ".scripts/list_tools.sh",
-    ".scripts/list_tools.ps1",
-    ".scripts/install_skills.sh",
-    ".scripts/install_skills.ps1",
-    ".scripts/update_skill.sh",
-    ".scripts/update_skill.ps1",
-    ".scripts/update_skills.sh",
-    ".scripts/update_skills.ps1",
-    ".scripts/list_skills.sh",
-    ".scripts/list_skills.ps1",
-    ".scripts/install_mcp.sh",
-    ".scripts/install_mcp.ps1",
-    ".scripts/update_mcp.sh",
-    ".scripts/update_mcp.ps1",
-    ".scripts/update_mcps.sh",
-    ".scripts/update_mcps.ps1",
-    ".scripts/list_mcps.sh",
-    ".scripts/list_mcps.ps1"
+    "bin/cdx",
+    "bin/cdx.ps1"
   ],
   "managedAreas": [
-    ".bootstrap/templates/",
-    ".bootstrap/scripts/",
-    ".bootstrap/lib/",
-    ".bootstrap/skill-installs/",
-    ".bootstrap/mcp-installs/",
-    ".bootstrap/skills-cache/"
+    "bootstrap/",
+    "state/",
+    "runtime/"
   ],
   "notes": [
-    "Workbench tools are global.",
-    "Skills are fetched from original repositories.",
-    "MCP servers can be installed globally or per project.",
-    "The visible Agents.md is replaced with a project-specific version after initialization."
+    "The repository is intended to live as .codex inside a customer folder.",
+    "Visible project docs live one directory above the repository root.",
+    "Tools, Skills, and MCPs are managed through a single cdx CLI."
   ]
 }

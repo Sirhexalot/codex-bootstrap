@@ -16,8 +16,6 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 ## Purpose
 
 - Project purpose: `__PURPOSE__`
-- Relevant systems: `__TOOLS__`
-- Preferred channels: `__CHANNELS__`
 
 ## Working Rules
 

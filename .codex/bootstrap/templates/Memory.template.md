@@ -19,7 +19,7 @@
 ## Open Points
 
 - Sharpen the first productive workflows.
-- Connect the relevant systems and channels in concrete terms.
+- Make the first concrete workflows explicit.
 
 ## Run Log
 

@@ -13,7 +13,6 @@ The hidden repository owns only the technical runtime:
 ```text
 .codex/
   README.md
-  project.yaml
   bin/
     cdx
     cdx.ps1
@@ -36,9 +35,10 @@ The hidden repository owns only the technical runtime:
 ## Main Flow
 
 1. Clone this repository into the customer folder as `.codex`.
-2. Run `./.codex/bin/cdx init`.
-3. Answer the project questions.
-4. Manage extensions through the same CLI:
+2. Optional for a fresh machine: run `./.codex/bin/cdx setup`.
+3. Run `./.codex/bin/cdx init`.
+4. Answer the project questions.
+5. Manage extensions through the same CLI:
    - `./.codex/bin/cdx add ...`
    - `./.codex/bin/cdx list ...`
    - `./.codex/bin/cdx update ...`
@@ -59,6 +59,7 @@ The hidden repository owns only the technical runtime:
 
 - `setup` prepares only the shared global workbench.
 - `init` creates `../Agents.md`, `../Memory.md`, and `../Decisions.md` in the visible customer root.
+- `init` removes `START_HERE.md` after successful initialization.
 - `state/` stores managed metadata only.
 - `runtime/` stores project-local runtimes only.
 - `bootstrap/` is internal implementation.

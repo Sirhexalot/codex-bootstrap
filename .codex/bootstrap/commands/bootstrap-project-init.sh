@@ -3,7 +3,7 @@ set -euo pipefail
 
 bootstrap_init_project() {
   local root_dir customer_dir template_dir runtime_automation_dir timestamp today timezone
-  local project_name user_name agent_name customer owner purpose role country language tone boundaries tools channels
+  local project_name user_name agent_name customer owner purpose role country language tone boundaries default_project_name
 
   root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
   customer_dir="$(cd "$root_dir/.." && pwd)"
@@ -24,6 +24,17 @@ bootstrap_init_project() {
       read -r -p "$label: " value
       printf '%s' "$value"
     fi
+  }
+
+  prompt_with_help() {
+    local label="$1"
+    local help_text="$2"
+    local default_value="${3:-}"
+
+    echo >&2
+    echo "$label" >&2
+    echo "  Hilft später bei: $help_text" >&2
+    prompt_default "  Antwort" "$default_value"
   }
 
   confirm_overwrite() {
@@ -48,6 +59,21 @@ bootstrap_init_project() {
     fi
   }
 
+  detect_default_project_name() {
+    local root_name customer_name
+
+    root_name="$(basename "$root_dir")"
+    customer_name="$(basename "$customer_dir")"
+
+    if [[ "$customer_name" == "Codex Setup" || "$customer_name" == ".codex" ]]; then
+      printf 'Mein Projekt'
+    elif [[ "$root_name" == ".codex" && -n "$customer_name" ]]; then
+      printf '%s' "$customer_name"
+    else
+      printf 'Mein Projekt'
+    fi
+  }
+
   render_template() {
     local template_path="$1"
     local output_path="$2"
@@ -69,70 +95,10 @@ bootstrap_init_project() {
     content="${content//__LANGUAGE__/$language}"
     content="${content//__TONE__/$tone}"
     content="${content//__PURPOSE__/$purpose}"
-    content="${content//__TOOLS__/$tools}"
-    content="${content//__CHANNELS__/$channels}"
     content="${content//__BOUNDARIES__/$boundaries}"
     content="${content//__TIMESTAMP__/$timestamp}"
     content="${content//__DATE__/$today}"
     printf '%s\n' "$content" > "$output_path"
-  }
-
-  write_project_yaml() {
-    cat > "$root_dir/project.yaml" <<EOF
-bootstrap:
-  name: "codex-agent-bootstrap"
-  version: "0.3.0"
-  initialized_at: "$timestamp"
-  manifest: "bootstrap/manifest.json"
-
-project:
-  name: "$project_name"
-  customer: "$customer"
-  purpose: "$purpose"
-  owner: "$owner"
-  user_name: "$user_name"
-  agent_name: "$agent_name"
-  role: "$role"
-  country: "$country"
-  timezone: "$timezone"
-  status: "initialized"
-  language: "$language"
-  customer_root: "$customer_dir"
-
-agent:
-  default_tone: "$tone"
-  autonomy_level: "confirm_before_external_actions"
-  risk_level: "medium"
-  boundaries: "$boundaries"
-
-memory:
-  long_term_memory: "Memory MCP Server"
-  visible_project_agents: "../Agents.md"
-  visible_project_memory: "../Memory.md"
-  global_memory: "~/.codex/Memory.md"
-
-folders:
-  visible_docs_root: ".."
-  bin: "bin"
-  bootstrap: "bootstrap"
-  state: "state"
-  runtime: "runtime"
-
-extensions:
-  scopes:
-    - "global"
-    - "project"
-  supported_kinds:
-    - "tool"
-    - "skill"
-    - "mcp"
-
-heartbeat:
-  enabled: true
-  name: "Heartbeat"
-  automation_path: "runtime/automations/heartbeat"
-  timezone: "$timezone"
-EOF
   }
 
   write_manifest() {
@@ -175,36 +141,44 @@ EOF
   }
 
   timezone="$(detect_timezone)"
-  project_name="$(prompt_default "Project name" "$(basename "$customer_dir")")"
-  user_name="$(prompt_default "User name")"
-  agent_name="$(prompt_default "Agent name" "Codex")"
-  customer="$(prompt_default "Customer, team, or organization" "$user_name")"
-  owner="$(prompt_default "Responsible person or team" "$user_name")"
-  purpose="$(prompt_default "Agent purpose")"
-  role="$(prompt_default "Agent role or focus" "AI coworker")"
-  country="$(prompt_default "Country")"
-  timezone="$(prompt_default "Timezone" "$timezone")"
-  language="$(prompt_default "Language" "de")"
-  tone="$(prompt_default "Tone" "freundlich, präzise, praktisch")"
-  boundaries="$(prompt_default "Sensitive boundaries and no-gos" "No external changes without approval")"
-  tools="$(prompt_default "Relevant systems" "GitHub, Google Workspace, Slack")"
-  channels="$(prompt_default "Preferred channels" "Codex")"
+  default_project_name="$(detect_default_project_name)"
+
+  echo "Lass uns kurz die Projektdateien vorbereiten:"
+  echo "  - ../Agents.md"
+  echo "  - ../Memory.md"
+  echo "  - ../Decisions.md"
+  echo
+  echo "Ich frage dich jetzt nach ein paar Basisangaben, damit der Start nicht bei null beginnt."
+  echo "Wenn etwas noch nicht ganz feststeht, nimm einfach den Vorschlag oder ändere es später direkt in den Dateien."
+
+  project_name="$(prompt_with_help "Wie soll das Projekt heißen?" "Der Name taucht später in den Startdokumenten als Bezugspunkt auf." "$default_project_name")"
+  user_name="$(prompt_with_help "Für wen richten wir das Projekt ein?" "Der Name hilft dabei, Rollen und Zuständigkeiten in den Dokumenten klar zu halten.")"
+  agent_name="$(prompt_with_help "Wie soll der Agent heißen?" "So wird der projektbezogene Codex-Agent in den Dokumenten benannt." "Codex")"
+  customer="$user_name"
+  owner="$user_name"
+  purpose="$(prompt_with_help "Wobei soll der Agent hauptsächlich helfen?" "Das landet als kurze Ausrichtung in den Startdokumenten.")"
+  country="$(prompt_with_help "Welches Land ist relevant?" "Hilft bei Sprache, Marktbezug oder Rahmenbedingungen, wenn das Projekt sie braucht.")"
+  timezone="$(prompt_with_help "Welche Zeitzone passt?" "Wichtig für Zeitbezug und mögliche Automationen." "$timezone")"
+  language="$(prompt_with_help "In welcher Sprache sollen die Startdokumente angelegt werden?" "Damit Ton und Grundsprache von Anfang an passen." "de")"
+  role="KI-Mitarbeiter"
+  tone="freundlich, präzise, praktisch"
+  boundaries="Keine externen Änderungen ohne Freigabe"
 
   render_template "$template_dir/Agents.template.md" "$customer_dir/Agents.md"
   render_template "$template_dir/Memory.template.md" "$customer_dir/Memory.md"
   render_template "$template_dir/Decisions.template.md" "$customer_dir/Decisions.md"
-  write_project_yaml
   write_manifest
   write_heartbeat_readme
+  rm -f "$root_dir/START_HERE.md"
 
   echo
-  echo "Project initialized."
-  echo "Visible project files:"
+  echo "Fertig, die Projektdateien sind angelegt."
+  echo "Du findest sie hier:"
   echo "  $customer_dir/Agents.md"
   echo "  $customer_dir/Memory.md"
   echo "  $customer_dir/Decisions.md"
   echo
-  echo "Next recommended commands:"
+  echo "Sinnvolle nächste Schritte:"
   echo "  ./.codex/bin/cdx add tool documents --scope project"
   echo "  ./.codex/bin/cdx add skill drawio-diagrams-enhanced --scope project"
   echo "  ./.codex/bin/cdx add mcp macos-mcp --scope global"
