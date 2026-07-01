@@ -38,6 +38,9 @@ Decisions.md
 state/tools/*.env
 state/skills/*.env
 state/mcps/*.env
+.codex/state/tools/*.env
+.codex/state/skills/*.env
+.codex/state/mcps/*.env
 runtime/tools/*
 !runtime/tools/.gitkeep
 !runtime/tools/bin/

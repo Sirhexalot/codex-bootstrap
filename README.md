@@ -48,9 +48,9 @@ The hidden repository owns only the technical runtime:
 ```bash
 ./.codex/bin/cdx setup
 ./.codex/bin/cdx init
-./.codex/bin/cdx add tool <name> --scope global|project
-./.codex/bin/cdx add skill <name> --scope global|project
-./.codex/bin/cdx add mcp <name> --scope global|project
+./.codex/bin/cdx add tool all --scope global|project
+./.codex/bin/cdx add skillall --scope global|project
+./.codex/bin/cdx add mcp all --scope global|project
 ./.codex/bin/cdx list [all|tools|skills|mcps] --scope global|project|both
 ./.codex/bin/cdx update [all|tools|skills|mcps] [name...] --scope global|project|both
 ```
