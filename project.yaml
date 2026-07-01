@@ -62,7 +62,7 @@ onboarding:
   first_prompt: "Please initialize this project as a customer agent."
   read_first:
     - "project.yaml"
-    - "AGENTS.md"
+    - "Agents.md"
     - "Memory.md"
     - "Decisions.md"
 

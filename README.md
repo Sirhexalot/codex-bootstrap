@@ -5,7 +5,7 @@ This repository is a starter kit you can hand to a friend, team, or customer so 
 The design is intentionally two-step:
 
 1. the hidden setup commands prepare the global workbench
-2. project initialization turns this folder into a concrete agent with its own identity, `AGENTS.md`, `Memory.md`, and `Decisions.md`
+2. project initialization turns this folder into a concrete agent with its own identity, `Agents.md`, `Memory.md`, and `Decisions.md`
 
 ## What This Repository Should Provide
 
@@ -49,8 +49,8 @@ The agent should then:
 - read the bootstrap files first
 - run an interview
 - capture the project identity
-- write the final `AGENTS.md`
-- fill in `project.yaml`, `AGENTS.md`, `Memory.md`, and `Decisions.md`
+- write the final `Agents.md`
+- fill in `project.yaml`, `Agents.md`, `Memory.md`, and `Decisions.md`
 - create or update `.bootstrap/automations/heartbeat/`
 
 ### 3. Install Tool Bundles Intentionally
@@ -190,7 +190,7 @@ bootstrap-agent/
 ├─ .bootstrap/
 ├─ .mcp/
 ├─ .scripts/
-├─ AGENTS.md
+├─ Agents.md
 ├─ Decisions.md
 ├─ Memory.md
 ├─ README.md
@@ -262,6 +262,6 @@ Shortcut summary:
 
 ## After Initialization
 
-After the first onboarding run, the visible `AGENTS.md` belongs entirely to the concrete agent project.
+After the first onboarding run, the visible `Agents.md` belongs entirely to the concrete agent project.
 
 The bootstrap-specific rules remain only under `.bootstrap/`, so the new user gets a clear, uncluttered project workspace.

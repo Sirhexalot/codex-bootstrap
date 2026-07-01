@@ -45,6 +45,6 @@
     "Workbench tools are global.",
     "Skills are fetched from original repositories.",
     "MCP servers can be installed globally or per project.",
-    "The visible AGENTS.md is replaced with a project-specific version after initialization."
+    "The visible Agents.md is replaced with a project-specific version after initialization."
   ]
 }

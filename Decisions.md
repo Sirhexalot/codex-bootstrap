@@ -12,13 +12,13 @@ This file records important decisions for the concrete agent project and the act
 
 ### 2026-06-24 - Global AGENTS synchronization added for managed installs
 
-- Decision: synchronize compact managed global references into `~/.codex/AGENTS.md`, and synchronize managed project entries into `./AGENTS.md`.
+- Decision: synchronize compact managed global references into `~/.codex/Agents.md`, and synchronize managed project entries into `./Agents.md`.
 - Rationale: make the actual installed state visible where agents already look for operating context.
 - Status: `active`
 
 ### 2026-06-30 - Root project docs reduced to AGENTS, Memory, and Decisions
 
-- Decision: keep customer context in `AGENTS.md`, keep durable project facts in `Memory.md`, and keep decision history in `Decisions.md`.
+- Decision: keep customer context in `Agents.md`, keep durable project facts in `Memory.md`, and keep decision history in `Decisions.md`.
 - Rationale: remove duplicate sources of truth and make the bootstrap easier to scan.
 - Status: `active`
 

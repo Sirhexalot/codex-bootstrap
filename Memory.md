@@ -14,12 +14,12 @@ This file is the shared project memory for this bootstrap repository.
 - The global workbench is prepared through `.scripts/setup-mac.sh` and `.scripts/setup-windows.ps1`.
 - Bootstrap internals live under `.bootstrap/`.
 - Visible commands under `.scripts/` delegate to bootstrap logic.
-- Root project documentation is intentionally reduced to `AGENTS.md`, `Memory.md`, and `Decisions.md`.
+- Root project documentation is intentionally reduced to `Agents.md`, `Memory.md`, and `Decisions.md`.
 - Project automations live under `.bootstrap/automations/`.
 - Project-local MCP servers live under `.mcp/`, with install metadata under `.bootstrap/mcp-installs/`.
 - Skills are installed from original repositories.
 - Skill installations distinguish between `global` and `project`.
-- After initialization, the visible `AGENTS.md` is replaced with a project-specific version.
+- After initialization, the visible `Agents.md` is replaced with a project-specific version.
 
 ## Stable Decisions
 
@@ -37,7 +37,7 @@ This file is the shared project memory for this bootstrap repository.
   - New tool catalogs under `.bootstrap/lib/tool-catalog.sh` and `.bootstrap/lib/tool-catalog.ps1`.
   - New visible scripts for tool installation, update, and listing.
   - Default bundles: `core`, `documents`, `pdf-images`, `diagrams`, `browser-automation`.
-  - Managed global installs are synchronized into `~/.codex/AGENTS.md` as compact reference blocks.
+  - Managed global installs are synchronized into `~/.codex/Agents.md` as compact reference blocks.
 
 ### 2026-06-24 - English output unification and managed skill inventory audit
 
@@ -64,7 +64,7 @@ This file is the shared project memory for this bootstrap repository.
 - Results:
   - `.bootstrap/lib/skill-catalog.sh` now supports a managed skill entry named `jira`.
   - `.scripts/README.md` now lists `jira` among the supported skill sources.
-  - The global install metadata and `~/.codex/AGENTS.md` will be kept in sync through the normal installer flow.
+  - The global install metadata and `~/.codex/Agents.md` will be kept in sync through the normal installer flow.
 
 ### 2026-06-25 - Spillwave JIRA skill removed after comparison
 
@@ -73,7 +73,7 @@ This file is the shared project memory for this bootstrap repository.
 - Results:
   - The temporary managed `jira` catalog entry was removed from `.bootstrap/lib/skill-catalog.sh`.
   - The global install at `~/.codex/skills/jira` and its managed metadata were removed.
-  - The managed global skills block in `~/.codex/AGENTS.md` was resynchronized.
+  - The managed global skills block in `~/.codex/Agents.md` was resynchronized.
 
 ### 2026-06-25 - MarkItDown skill promoted into managed bootstrap catalog
 
@@ -87,10 +87,10 @@ This file is the shared project memory for this bootstrap repository.
 ### 2026-06-30 - Root-only project docs and hidden operational folders
 
 - Trigger: a request to remove redundant project docs and keep only the essential root files.
-- Goal: consolidate customer context into `AGENTS.md`, move project decisions to `Decisions.md`, hide user-facing commands in `.scripts/`, and move project automations under `.bootstrap/automations/`.
+- Goal: consolidate customer context into `Agents.md`, move project decisions to `Decisions.md`, hide user-facing commands in `.scripts/`, and move project automations under `.bootstrap/automations/`.
 - Results:
   - `docs/` was retired from the active project structure.
-  - Root project docs are now `AGENTS.md`, `Memory.md`, and `Decisions.md`.
+  - Root project docs are now `Agents.md`, `Memory.md`, and `Decisions.md`.
   - Visible entry points now live in `.scripts/`, including the setup scripts.
   - Project automations now live in `.bootstrap/automations/`.
 

@@ -1,4 +1,4 @@
-# __AGENT_NAME__
+# **AGENT_NAME**
 
 You are the project-specific agent for `__PROJECT_NAME__`.
 
@@ -36,11 +36,11 @@ You are the project-specific agent for `__PROJECT_NAME__`.
 ## Skills and Workbench
 
 - Workbench tools are global and are not installed into the project itself.
-- Global workbench details live in `~/.codex/AGENTS.md`.
+- Global workbench details live in `~/.codex/Agents.md`.
 - This file should only carry project-specific systems, channels, and working context.
 - Skills can be installed globally or per project.
 - MCP servers can be installed globally or per project.
-- Installation scripts synchronize compact managed global references into `~/.codex/AGENTS.md` and managed project entries into `./AGENTS.md`.
+- Installation scripts synchronize compact managed global references into `~/.codex/Agents.md` and managed project entries into `./Agents.md`.
 - Use the following commands for skill management:
   - `./.scripts/install_skills.sh`
   - `./.scripts/update_skill.sh`
@@ -53,18 +53,21 @@ You are the project-specific agent for `__PROJECT_NAME__`.
   - `./.scripts/list_mcps.sh`
 
 <!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
+
 ## Managed Project Tool Bundles
 
 - none
 <!-- CODEX_PROJECT_TOOL_BUNDLES_END -->
 
 <!-- CODEX_PROJECT_SKILLS_START -->
+
 ## Managed Project Skills
 
 - none
 <!-- CODEX_PROJECT_SKILLS_END -->
 
 <!-- CODEX_PROJECT_MCPS_START -->
+
 ## Managed Project MCP Servers
 
 - none

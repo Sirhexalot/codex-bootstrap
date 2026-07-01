@@ -14,10 +14,10 @@ Please initialize this project as a customer agent.
 
 The agent should:
 
-1. read `AGENTS.md`, `project.yaml`, `Memory.md`, `Decisions.md`, and `.bootstrap/README.md`
+1. read `Agents.md`, `project.yaml`, `Memory.md`, `Decisions.md`, and `.bootstrap/README.md`
 2. ask about the user name, agent name, purpose, role, country, timezone, language, tone, and boundaries
-3. write the final `AGENTS.md` for the project
-4. adapt `project.yaml`, `AGENTS.md`, `Memory.md`, and `Decisions.md` to the real context
+3. write the final `Agents.md` for the project
+4. adapt `project.yaml`, `Agents.md`, `Memory.md`, and `Decisions.md` to the real context
 5. create or update the default `Heartbeat` automation under `.bootstrap/automations/`
 6. show how to install tool bundles, skills, and MCP servers globally or in project mode
 

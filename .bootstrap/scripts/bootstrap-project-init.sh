@@ -4,7 +4,7 @@ set -euo pipefail
 bootstrap_init_project() {
   local root_dir
   root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-  local template_path="$root_dir/.bootstrap/templates/final-AGENTS.md"
+  local template_path="$root_dir/.bootstrap/templates/final-Agents.md"
   local timestamp timezone
   local project_name user_name agent_name customer owner purpose role country language tone risk_level boundaries tools channels
 
@@ -50,7 +50,7 @@ bootstrap_init_project() {
     content="${content//__TOOLS__/$tools}"
     content="${content//__CHANNELS__/$channels}"
     content="${content//__BOUNDARIES__/$boundaries}"
-    printf '%s\n' "$content" > "$root_dir/AGENTS.md"
+    printf '%s\n' "$content" > "$root_dir/Agents.md"
   }
 
   write_project_yaml() {
@@ -121,7 +121,7 @@ onboarding:
   first_prompt: "Please initialize this project as a customer agent."
   read_first:
     - "project.yaml"
-    - "AGENTS.md"
+    - "Agents.md"
     - "Memory.md"
     - "Decisions.md"
 
@@ -146,7 +146,7 @@ This file records important decisions for the concrete agent project.
 - Decision: This repository was turned into a concrete agent for \`$user_name\`.
 - Rationale: The bootstrap should now act as the real project frame for \`$agent_name\`.
 - Alternatives: Keep the generic bootstrap AGENTS file.
-- Impact: The visible \`AGENTS.md\` is now project-specific, customer context lives there directly, and operations run through \`.scripts/\`, \`.mcp/\`, and \`.bootstrap/automations/\`.
+- Impact: The visible \`Agents.md\` is now project-specific, customer context lives there directly, and operations run through \`.scripts/\`, \`.mcp/\`, and \`.bootstrap/automations/\`.
 - Status: \`active\`
 EOF
   }
@@ -183,8 +183,8 @@ EOF
 - Trigger: local bootstrap initialization script
 - Goal: turn the template into a concrete agent
 - Results:
-  - wrote the final \`AGENTS.md\` for \`$agent_name\`
-  - adapted \`project.yaml\`, \`AGENTS.md\`, \`Decisions.md\`, and \`Memory.md\` to the project context
+  - wrote the final \`Agents.md\` for \`$agent_name\`
+  - adapted \`project.yaml\`, \`Agents.md\`, \`Decisions.md\`, and \`Memory.md\` to the project context
   - created or updated the Heartbeat automation
 - Next steps:
   - define the first concrete tools and channels
@@ -242,7 +242,7 @@ EOF
     "Workbench tools are global.",
     "Skills are fetched from original repositories.",
     "MCP servers can be installed globally or per project.",
-    "The visible AGENTS.md is replaced with a project-specific version after initialization."
+    "The visible Agents.md is replaced with a project-specific version after initialization."
   ]
 }
 EOF

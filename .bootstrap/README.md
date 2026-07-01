@@ -5,7 +5,7 @@ This folder contains the hidden bootstrap logic for this repository.
 ## Purpose
 
 - initialize a new agent project
-- provide templates for the final `AGENTS.md`, `Memory.md`, and `Decisions.md`
+- provide templates for the final `Agents.md`, `Memory.md`, and `Decisions.md`
 - store metadata about bootstrap versions and managed installations
 - track skill catalogs and skill installation state
 - track MCP catalogs and MCP installation state
@@ -16,15 +16,15 @@ This folder contains the hidden bootstrap logic for this repository.
 If this repository has not been initialized yet, read at least in this order:
 
 1. `.bootstrap/README.md`
-2. `.bootstrap/templates/final-AGENTS.md`
+2. `.bootstrap/templates/final-Agents.md`
 3. `.bootstrap/scripts/bootstrap-project-init.sh` or `.bootstrap/scripts/bootstrap-project-init.ps1`
 4. `.bootstrap/lib/skill-catalog.sh`
 
 ## Important Rules
 
-- the visible `AGENTS.md` is only the bootstrap entry point
-- after initialization, the visible `AGENTS.md` belongs to the concrete project
-- customer context belongs in `AGENTS.md`, not in a separate `docs/` tree
+- the visible `Agents.md` is only the bootstrap entry point
+- after initialization, the visible `Agents.md` belongs to the concrete project
+- customer context belongs in `Agents.md`, not in a separate `docs/` tree
 - tool bundles, skills, and MCP servers can be installed in global or project mode depending on the task
 - native system tools stay globally preferred, while document-heavy Python or Node runtimes may be added locally when useful
 - skills are fetched from original repositories and installed per run as `global` or `project`

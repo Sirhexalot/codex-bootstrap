@@ -9,8 +9,8 @@ $script:ProjectBinDir = Join-Path $script:ProjectToolsDir "bin"
 $script:GlobalToolRoot = Join-Path $script:UserHome ".codex\workbench"
 $script:GlobalPythonVenv = Join-Path $script:GlobalToolRoot "python"
 $script:GlobalBinDir = Join-Path $script:UserHome ".codex\bin"
-$script:GlobalAgentsFile = Join-Path $script:UserHome ".codex\AGENTS.md"
-$script:ProjectAgentsFile = Join-Path $script:ProjectRoot "AGENTS.md"
+$script:GlobalAgentsFile = Join-Path $script:UserHome ".codex\Agents.md"
+$script:ProjectAgentsFile = Join-Path $script:ProjectRoot "Agents.md"
 $script:SupportedToolBundles = @("core", "documents", "pdf-images", "diagrams", "browser-automation", "composio-cli")
 
 function Ensure-ToolBaseDirs {

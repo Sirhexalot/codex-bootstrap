@@ -17,7 +17,7 @@ If this project has not been initialized for a concrete user yet, work in exactl
 - Visible commands live under `.scripts/`.
 - Project automations live under `.bootstrap/automations/`.
 - During initialization, interview the user and build the real project from that conversation.
-- After successful initialization, this file is replaced by a project-specific `AGENTS.md`.
+- After successful initialization, this file is replaced by a project-specific `Agents.md`.
 
 ## Customer Context
 
@@ -35,8 +35,8 @@ Customer context belongs in this file after initialization, not in a separate `d
 
 ## Project-Specific Tools and Channels
 
-Global workbench tools belong in `~/.codex/AGENTS.md`.
-Only project-specific systems, channels, and access rules belong in this project `AGENTS.md`.
+Global workbench tools belong in `~/.codex/Agents.md`.
+Only project-specific systems, channels, and access rules belong in this project `Agents.md`.
 
 - important tools, systems, or channels
 
@@ -78,31 +78,22 @@ Only project-specific systems, channels, and access rules belong in this project
 - `./.scripts/list_mcps.ps1`
 
 <!-- CODEX_PROJECT_SKILLS_START -->
+
 ## Managed Project Skills
 
 - `drawio-diagrams-enhanced`: Type `skill` | Target `/Users/adrian/Desktop/Codex Setup/skills/drawio-diagrams-enhanced` | Source `https://github.com/jgtolentino/insightpulse-odoo.git`
 <!-- CODEX_PROJECT_SKILLS_END -->
 
 <!-- CODEX_PROJECT_TOOL_BUNDLES_START -->
+
 ## Managed Project Tool Bundles
 
 - `documents`: Target `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/documents` | Commands `/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-python,/Users/adrian/Desktop/Codex Setup/.bootstrap/tools/bin/codex-markitdown` | Packages `python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse`
-  Note: Project mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
+Note: Project mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools.
 <!-- CODEX_PROJECT_TOOL_BUNDLES_END -->
 
-
-
-
-
-
-
-
-
-
-
-
 <!-- CODEX_PROJECT_MCPS_START -->
-## Managed Project MCP Servers
 
+## Managed Project MCP Servers
 
 <!-- CODEX_PROJECT_MCPS_END -->

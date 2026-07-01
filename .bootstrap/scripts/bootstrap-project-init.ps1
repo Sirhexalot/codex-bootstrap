@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 function Invoke-BootstrapProjectInit {
   $rootDir = Resolve-Path (Join-Path $PSScriptRoot "../..")
-  $templatePath = Join-Path $rootDir ".bootstrap/templates/final-AGENTS.md"
+  $templatePath = Join-Path $rootDir ".bootstrap/templates/final-Agents.md"
   $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm zzz"
 
   function Prompt-Default {
@@ -41,7 +41,7 @@ function Invoke-BootstrapProjectInit {
 
   $agents = Get-Content -Path $templatePath -Raw
   $agents = $agents.Replace("__PROJECT_NAME__", $projectName).Replace("__USER_NAME__", $userName).Replace("__AGENT_NAME__", $agentName).Replace("__CUSTOMER__", $customer).Replace("__ROLE__", $role).Replace("__COUNTRY__", $country).Replace("__TIMEZONE__", $timezone).Replace("__LANGUAGE__", $language).Replace("__TONE__", $tone).Replace("__PURPOSE__", $purpose).Replace("__TOOLS__", $tools).Replace("__CHANNELS__", $channels).Replace("__BOUNDARIES__", $boundaries)
-  Set-Content -Path (Join-Path $rootDir "AGENTS.md") -Value $agents -Encoding UTF8
+  Set-Content -Path (Join-Path $rootDir "Agents.md") -Value $agents -Encoding UTF8
 
   @"
 bootstrap:
@@ -110,7 +110,7 @@ onboarding:
   first_prompt: "Please initialize this project as a customer agent."
   read_first:
     - "project.yaml"
-    - "AGENTS.md"
+    - "Agents.md"
     - "Memory.md"
     - "Decisions.md"
 
@@ -135,7 +135,7 @@ This file records important decisions for the concrete agent project.
 - Decision: This repository was turned into a concrete agent for ``$userName``.
 - Rationale: The bootstrap should now act as the real project frame for ``$agentName``.
 - Alternatives: Keep the generic bootstrap AGENTS file.
-- Impact: The visible ``AGENTS.md`` is now project-specific, customer context lives there directly, and operations run through ``.scripts/``, ``.mcp/``, and ``.bootstrap/automations/``.
+- Impact: The visible ``Agents.md`` is now project-specific, customer context lives there directly, and operations run through ``.scripts/``, ``.mcp/``, and ``.bootstrap/automations/``.
 - Status: ``active``
 "@ | Set-Content -Path (Join-Path $rootDir "Decisions.md") -Encoding UTF8
 
@@ -170,8 +170,8 @@ This file records important decisions for the concrete agent project.
 - Trigger: local bootstrap initialization script
 - Goal: turn the template into a concrete agent
 - Results:
-  - wrote the final ``AGENTS.md`` for ``$agentName``
-  - adapted ``project.yaml``, ``AGENTS.md``, ``Decisions.md``, and ``Memory.md`` to the project context
+  - wrote the final ``Agents.md`` for ``$agentName``
+  - adapted ``project.yaml``, ``Agents.md``, ``Decisions.md``, and ``Memory.md`` to the project context
   - created or updated the Heartbeat automation
 - Next steps:
   - define the first concrete tools and channels
@@ -227,7 +227,7 @@ This file records important decisions for the concrete agent project.
     "Workbench tools are global.",
     "Skills are fetched from original repositories.",
     "MCP servers can be installed globally or per project.",
-    "The visible AGENTS.md is replaced with a project-specific version after initialization."
+    "The visible Agents.md is replaced with a project-specific version after initialization."
   ]
 }
 "@ | Set-Content -Path (Join-Path $rootDir ".bootstrap/manifest.json") -Encoding UTF8
