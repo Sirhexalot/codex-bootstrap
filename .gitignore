@@ -26,21 +26,27 @@ __pycache__/
 .claude/*.local.md
 
 # Bootstrap-local state
-# Customer-facing files created by `codex init` live in the parent folder.
-# They are intentionally outside this repository and therefore not tracked here:
-#   ../AGENTS.md
+# Customer-facing files created by `codex init` live in the visible parent folder.
+# They are intentionally outside the hidden `.codex` runtime and therefore not tracked there:
+#   ../Agents.md
 #   ../Memory.md
 #   ../Decisions.md
 AGENTS.md
 Agents.md
 Memory.md
 Decisions.md
-state/tools/*.env
-state/skills/*.env
-state/mcps/*.env
-runtime/tools/*
-!runtime/tools/.gitkeep
-!runtime/tools/bin/
-!runtime/tools/documents/
-runtime/skills/**/.skill-source.env
-runtime/mcps/**/.mcp-source.env
+.codex/state/tools/*.env
+.codex/state/skills/*.env
+.codex/state/mcps/*.env
+.codex/runtime/tools/*
+!.codex/runtime/tools/.gitkeep
+!.codex/runtime/tools/bin/
+!.codex/runtime/tools/documents/
+.codex/runtime/skills/*
+!.codex/runtime/skills/.gitkeep
+!.codex/runtime/skills/README.md
+!.codex/runtime/skills/cache/
+.codex/runtime/skills/cache/*
+!.codex/runtime/skills/cache/.gitkeep
+.codex/runtime/skills/**/.skill-source.env
+.codex/runtime/mcps/**/.mcp-source.env

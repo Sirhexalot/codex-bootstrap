@@ -55,6 +55,8 @@ The hidden repository owns only the technical runtime:
 ./.codex/bin/cdx update [all|tools|skills|mcps] [name...] --scope global|project|both
 ```
 
+`cdx add skill ...` installs managed skills from their upstream Git sources into the local runtime or the global `~/.codex/skills` area. The repository tracks only the install metadata under `.codex/state/skills/*.env`, while refreshes come from `./.codex/bin/cdx update ...`.
+
 ## Rules
 
 - `setup` prepares only the shared global workbench.
@@ -62,6 +64,7 @@ The hidden repository owns only the technical runtime:
 - `init` removes `START_HERE.md` after successful initialization.
 - `state/` stores managed metadata only.
 - `runtime/` stores project-local runtimes only.
+- Managed upstream skills are fetched locally from Git and are not meant to be committed into this repository.
 - `bootstrap/` is internal implementation.
 - Inventories are shown with `cdx list`, not through generated blocks inside `Agents.md`.
 

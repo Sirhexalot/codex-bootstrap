@@ -24,4 +24,6 @@ After `cdx init`, the visible project files are created one level above this rep
 ./.codex/bin/cdx list all --scope both
 ```
 
+Managed skills are fetched from their upstream Git repositories into the local runtime and updated with `./.codex/bin/cdx update ...`; they are not intended to be versioned as repo files.
+
 `README.md` explains the full structure and command surface.

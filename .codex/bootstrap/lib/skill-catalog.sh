@@ -14,6 +14,7 @@ PROJECT_AGENTS_FILE="$PROJECT_ROOT/../Agents.md"
 SUPPORTED_SKILLS=(
   "financial-services"
   "marketingskills"
+  "composio-skills"
   "frontend-design"
   "humanizer"
   "markitdown"
@@ -107,6 +108,7 @@ Usage:
   ./.scripts/install_skills.sh project drawio-diagrams-enhanced
   ./.scripts/install_skills.sh all
   ./.scripts/install_skills.sh frontend-design humanizer
+  ./.scripts/install_skills.sh composio-skills
   ./.scripts/install_skills.sh ui-ux-pro-max pptx jira-expert
   ./.scripts/install_skills.sh --mode global all
 EOF
@@ -117,6 +119,7 @@ usage_update() {
 Usage:
   ./.scripts/update_skill.sh all
   ./.scripts/update_skill.sh financial-services
+  ./.scripts/update_skill.sh composio-skills
   ./.scripts/update_skill.sh ui-ux-pro-max pptx jira-expert markitdown
 EOF
 }
@@ -488,6 +491,12 @@ install_marketingskills() {
   with_temp_repo "$repo_url" "skills" copy_repo
 }
 
+install_composio_skills() {
+  local mode="$1"
+  local repo_url="https://github.com/ComposioHQ/awesome-codex-skills.git"
+  install_repo_subdir "composio-skills" "$mode" "collection" "$repo_url" "composio-skills" "composio-skills"
+}
+
 install_financial_services() {
   local mode="$1"
   local repo_url="https://github.com/anthropics/financial-services.git"
@@ -555,6 +564,7 @@ install_skill_by_name() {
   case "$skill_name" in
     financial-services) install_financial_services "$mode" ;;
     marketingskills) install_marketingskills "$mode" ;;
+    composio-skills) install_composio_skills "$mode" ;;
     frontend-design) install_frontend_design "$mode" ;;
     humanizer) install_humanizer "$mode" ;;
     markitdown) install_markitdown "$mode" ;;
