@@ -467,7 +467,7 @@ install_humanizer() {
 install_markitdown() {
   local mode="$1"
   local repo_url="https://github.com/jimmc414/Kosmos.git"
-  install_repo_subdir "markitdown" "$mode" "skill" "$repo_url" "kosmos-claude-scientific-.skillsscientific-.skillsmarkitdown" "kosmos-claude-scientific-.skillsscientific-.skillsmarkitdown"
+  install_repo_subdir "markitdown" "$mode" "skill" "$repo_url" "kosmos-claude-scientific-skills/scientific-skills/markitdown" "kosmos-claude-scientific-skills/scientific-skills/markitdown"
 }
 
 install_marketingskills() {
