@@ -365,7 +365,7 @@ install_global_python_documents() {
 
   "$python_bin" -m venv "$GLOBAL_PYTHON_VENV"
   "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade pip
-  "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
+  "$GLOBAL_PYTHON_VENV/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf pyobjc-framework-CoreText
   ensure_python_wrapper "$GLOBAL_PYTHON_VENV/bin/python" "$GLOBAL_BIN_DIR"
 }
 
@@ -383,7 +383,7 @@ install_project_python_documents() {
 
   "$python_bin" -m venv "$python_venv"
   "$python_venv/bin/python" -m pip install --upgrade pip
-  "$python_venv/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf
+  "$python_venv/bin/python" -m pip install --upgrade openpyxl python-docx python-pptx markitdown pypdf pymupdf pyobjc-framework-CoreText
   ensure_python_wrapper "$python_venv/bin/python" "$PROJECT_BIN_DIR"
 }
 
@@ -468,12 +468,12 @@ install_documents_bundle() {
     run_brew install pandoc pymupdf
     install_global_python_documents
     install_global_node_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV|/opt/homebrew|/usr/local" "codex-python,codex-markitdown,pandoc,pymupdf" "brew:pandoc,pymupdf|python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Global document workbench for Office generation, extraction, and PDF parsing, including PyMuPDF and Node document parsers and generators."
+    write_tool_metadata "documents" "$mode" "global_or_project" "$GLOBAL_PYTHON_VENV|/opt/homebrew|/usr/local" "codex-python,codex-markitdown,pandoc,pymupdf" "brew:pandoc,pymupdf|python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf,pyobjc-framework-CoreText|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Global document workbench for Office generation, extraction, and PDF parsing, including PyMuPDF, macOS CoreText bindings, and Node document parsers and generators."
     sync_global_agents_file
   else
     install_project_python_documents
     install_project_node_documents
-    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Project mode creates a local document runtime with Python and Node packages. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools."
+    write_tool_metadata "documents" "$mode" "global_or_project" "$PROJECT_TOOLS_DIR/documents" "$PROJECT_BIN_DIR/codex-python,$PROJECT_BIN_DIR/codex-markitdown" "python:openpyxl,python-docx,python-pptx,markitdown,pypdf,pymupdf,pyobjc-framework-CoreText|npm:mammoth,docx,xlsx,pptxgenjs,pdf-parse" "Project mode creates a local document runtime with Python and Node packages, including macOS CoreText bindings. Pandoc and the Homebrew PyMuPDF formula remain globally preferred native tools."
   fi
 }
 
