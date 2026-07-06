@@ -5,9 +5,9 @@ $Script:RepoRoot = Split-Path -Parent $Script:CodexRoot
 
 function Get-BashExecutable {
   $candidates = @(
-    (Get-Command bash -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue),
     "C:\Program Files\Git\bin\bash.exe",
-    "C:\Program Files\Git\usr\bin\bash.exe"
+    "C:\Program Files\Git\usr\bin\bash.exe",
+    (Get-Command bash -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue)
   ) | Where-Object { $_ -and (Test-Path $_) }
 
   
@@ -48,6 +48,40 @@ function Ensure-Directory {
   if (-not (Test-Path -LiteralPath $Path)) {
     New-Item -ItemType Directory -Path $Path -Force | Out-Null
   }
+}
+
+function Get-BashPathStyle {
+  param([string]$BashExecutable)
+
+  $detectedStyle = & $BashExecutable --noprofile --norc -lc "if [ -d /mnt/c ]; then printf 'wsl'; elif [ -d /c ]; then printf 'msys'; else printf 'unknown'; fi"
+  if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($detectedStyle)) {
+    return "unknown"
+  }
+
+  return $detectedStyle.Trim()
+}
+
+function Convert-WindowsPathToBash {
+  param(
+    [string]$Path,
+    [string]$Style = "unknown"
+  )
+
+  $resolvedPath = (Resolve-Path -LiteralPath $Path).Path
+  $normalizedPath = $resolvedPath -replace "\\", "/"
+
+  if ($normalizedPath -match "^([A-Za-z]):(.*)$") {
+    $driveLetter = $Matches[1].ToLower()
+    $pathSuffix = $Matches[2]
+
+    if ($Style -eq "wsl") {
+      return "/mnt/$driveLetter$pathSuffix"
+    }
+
+    return "/$driveLetter$pathSuffix"
+  }
+
+  return $normalizedPath
 }
 
 function Get-WindowsCommandPath {
@@ -353,7 +387,9 @@ function Invoke-BashFallback {
 
   $bashExe = Get-BashExecutable
   $shellScript = Join-Path $Script:ScriptDir "cdx"
-  & $bashExe --noprofile --norc $shellScript @ForwardArgs
+  $bashStyle = Get-BashPathStyle -BashExecutable $bashExe
+  $bashScript = Convert-WindowsPathToBash -Path $shellScript -Style $bashStyle
+  & $bashExe --noprofile --norc $bashScript @ForwardArgs
 }
 
 if ($IsWindows -and $Args.Count -gt 0 -and $Args[0] -eq "setup") {
@@ -361,7 +397,7 @@ if ($IsWindows -and $Args.Count -gt 0 -and $Args[0] -eq "setup") {
   exit 0
 }
 
-if ($IsWindows -and $Args.Count -gt 0 -and $Args[0] -eq "list") {
+if ($IsWindows -and $Args.Count -gt 0 -and $Args[0] -eq "list" -and ($Args.Count -eq 1 -or $Args[1] -eq "tools")) {
   $paths = Get-RepoPaths
   Show-WindowsToolInventory -Paths $paths
   exit 0
